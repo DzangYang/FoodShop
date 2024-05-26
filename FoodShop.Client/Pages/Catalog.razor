@@ -1,0 +1,49 @@
+﻿@page "/catalog"
+@using Blazored.LocalStorage
+@inject HttpClient Http
+@inject ILocalStorageService localStorage
+
+<PageTitle>Catalog</PageTitle>
+
+<HeadContent>
+    <title>Catalog Page</title>
+</HeadContent>
+
+<h1>Catalog</h1>
+
+<!-- Button to perform some action, e.g., load products -->
+<button @onclick="LoadProducts">Load Catalog</button>
+
+@code {
+    private Product[] products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+    }
+
+    private async Task LoadProducts()
+    {
+        try
+        {
+            // Retrieve the authentication token from local storage
+            string token = await localStorage.GetItemAsStringAsync("authToken");
+            // Set the default request header for authorization
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            // Make an HTTP GET request to the specified URI
+            products = await Http.GetFromJsonAsync<Product[]>("https://localhost:7228/api/Product/Paginate");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error loading products: " + ex.Message);
+        }
+    }
+
+    // Define the Product class to match your data model
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; } public string Description { get; set; }
+    }
+}

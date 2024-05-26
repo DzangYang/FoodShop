@@ -1,0 +1,46 @@
+﻿@page "/register"
+@using NetcodeHub.Packages.Components.Validations.OnInput
+@using FoodShop.Client.States
+@using FoodShop.Application.Interfaces.Identity
+@using FoodShop.Application.DTO
+
+
+
+@inject NavigationManager NavManager
+
+@inject IRegistrationService RegisterService
+
+
+<div class="row">
+
+    <div class="col-lg-5">
+        <div class="alert alert-info">@Message</div>
+        <EditForm Model="RegisterModel" OnValidSubmit="RegisterAsync">
+            <DataAnnotationsValidator />
+            <FloatingText @bind-Value="RegisterModel.Login" Label="Login" Type="login" class="form-control mb-3" />
+            <FloatingText @bind-Value="RegisterModel.Password" Label="Password" Type="password" class="form-control mb-3 " />
+            <button class="btn btn-primary mb-3" type="submit">Register</button>
+            <Blazorise.ValidationSummary class="text-danger" />
+        </EditForm>
+
+    </div>
+</div>
+
+
+
+@code {
+    public string? Message = string.Empty;
+    
+    UserRegistrationModelDto RegisterModel = new();
+
+    async Task RegisterAsync()
+    {
+        var result = await RegisterService.RegistrationUserAsync(RegisterModel);
+        if (!result.Flag)
+            NavManager.NavigateTo("login", forceLoad: true);
+  
+        else
+            Message = result.Message;
+    }
+
+}

@@ -1,0 +1,13 @@
+﻿@page "/logout"
+@using FoodShop.Client.States
+@using Microsoft.AspNetCore.Components.Authorization;
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        var customAuthStateProvider = (CustomerAuthenticationStateProvider)AuthStateProvider;
+        await customAuthStateProvider.UpateAuthenticationState(null!);
+        NavManager.NavigateTo("/", forceLoad: true);
+    }
+    
+}

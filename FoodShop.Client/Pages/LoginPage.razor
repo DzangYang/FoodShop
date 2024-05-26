@@ -1,0 +1,46 @@
+﻿@page "/login"
+@using FoodShop.Client.States
+@using NetcodeHub.Packages.Components.Validations.OnInput
+@using Microsoft.AspNetCore.Components.Forms
+@using FoodShop.Application.Interfaces.Identity
+@using FoodShop.Application.DTO
+
+
+@inject ILoginService LoginService
+
+@inject AuthenticationStateProvider AuthStateProvider
+
+<div class="row">
+    <div class="col-lg-5">
+        <div class="alert alert-info">@Message</div>
+        <EditForm Model="LoginModel" OnValidSubmit="LoginAsync">
+            <DataAnnotationsValidator />
+            <FloatingText @bind-Value="LoginModel.Login" Label="Login" Type="login" class="form-control mb-3" />
+            <FloatingText @bind-Value="LoginModel.Password" Label="Password" Type="password" class="form-control mb-3 " />
+            <button class="btn btn-primary mb-3" type="submit">Login</button>
+            <Blazorise.ValidationSummary class="text-danger" />
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    string? Message = string.Empty;
+    UserLoginModelDto LoginModel = new();
+
+    async Task LoginAsync()
+    {
+        Message = null;
+        var result = await LoginService.LoginUserAsync(LoginModel);
+        if (result.Flag)
+        {
+            var customAuthStateProvider = (CustomerAuthenticationStateProvider)AuthStateProvider;
+            await customAuthStateProvider.UpateAuthenticationState(result.Token);
+
+            NavManager.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            Message = result.Message;
+        }
+    }
+}
