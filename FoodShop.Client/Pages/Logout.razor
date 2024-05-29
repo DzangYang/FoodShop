@@ -1,12 +1,16 @@
 ﻿@page "/logout"
 @using FoodShop.Client.States
 @using Microsoft.AspNetCore.Components.Authorization;
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
 
 @code {
     protected async override Task OnInitializedAsync()
     {
         var customAuthStateProvider = (CustomerAuthenticationStateProvider)AuthStateProvider;
         await customAuthStateProvider.UpateAuthenticationState(null!);
+        await localStorage.RemoveItemAsync("sale");
+
         NavManager.NavigateTo("/", forceLoad: true);
     }
     

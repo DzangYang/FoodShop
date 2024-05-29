@@ -5,6 +5,8 @@
 @using FoodShop.Domain.Domain.Entities
 @inject ILocalStorageService localStorage
 @inject HttpClient Http
+@inject NavigationManager NavManager
+
 <div>
     @if (products == null)
     {
@@ -16,26 +18,24 @@
             <div class="row">
                 @foreach (var product in products)
                 {
-                    <div class="col-md-4 mb-4">
-                        <a href="#">
+                    <div class=" col-md-4 mb-4">
+                        
+                        <div class="card_container" @onclick="() => NavigateToProduct(product.Id)">
                             <div class="card">
-                            <img class="img-thumbnail" src="@product.ImageURL" >
-                            <div class="card-body">
-                                <h5 class="card-title mb-3">
-                                    
-                                </h5>
-                                <p class="card-text">
-                                    
-                                    <b>@product.Price.ToString("C")
-                                        @if ( product.CategoryName == "Овощи" || product.CategoryName == "Фрукты" || product.CategoryName == "Сладости")
-                                        {
+                                <img class="img-thumbnail" src="@product.ImageURL">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">@product.Name</h5>
+                                    <p class="card-text">
+                                        <b>@product.Price.ToString("C")
+                                            @if (product.CategoryName == "Овощи" || product.CategoryName == "Фрукты" || product.CategoryName == "Сладости")
+                                            {
                                                 <span>(за 1кг)</span>
-                                        }
-                                    </b>
-                                </p>
+                                            }
+                                        </b>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        </a>
                     </div>
                 }
             </div>
@@ -43,28 +43,31 @@
     }
 </div>
 
-
-<style>
-    a {
-    text-decoration: none;
+@if (selectedProductId != Guid.Empty)
+{
+    <GetItemByIdProductPage ProductId="selectedProductId"></GetItemByIdProductPage>
 }
 
-a:hover .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    transition: box-shadow 0.3s ease-in-out;
+
+<style>
+    .card_container {
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.card_container:hover{
+    cursor:pointer;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    transform: translateY(-10px);
+    
 }
 
 .card {
     height: 400px;
-
-    transition: box-shadow 0.3s ease-in-out;
     overflow: hidden;
 }
 
-a:hover img {
-    transform: scale(1.07);
-    transition: 0.5s ease-in-out;
-}
+
 .card-body {
         display: flex;
         flex-direction: column;
@@ -87,22 +90,21 @@ img {
 </style>
 
 <Pagination>
-    <PaginationItem Disabled="@hasPreviousPage" @onclick="Previous">
+    <PaginationItem Disabled="@(!hasPreviousPage)" @onclick="Previous">
         <PaginationLink>
             <span aria-hidden="true">«</span>
         </PaginationLink>
     </PaginationItem>
-     @for (int i = 1; i <= totalPages; i++)
-     {
-         var pageNumberAsString = i.ToString();
-         <PaginationItem Active="@(currentPage==i)">
-             <PaginationLink Page="@pageNumberAsString" @onclick="() => SetActive(i)"> 
-                     @pageNumberAsString 
-             </PaginationLink>
-
-         </PaginationItem>
-     }
-    <PaginationItem Disabled="@hasNextPage" @onclick="Next">
+    @for (int i = 1; i <= totalPages; i++)
+    {
+        var pageNumberAsString = i.ToString();
+        <PaginationItem Active="@(currentPage == i)">
+            <PaginationLink Page="@pageNumberAsString" @onclick="() => SetActive(i)">
+                @pageNumberAsString
+            </PaginationLink>
+        </PaginationItem>
+    }
+    <PaginationItem Disabled="@(!hasNextPage)" @onclick="Next">
         <PaginationLink>
             <span aria-hidden="true">»</span>
         </PaginationLink>
@@ -120,6 +122,7 @@ img {
     private bool hasNextPage;
     private bool hasPreviousPage;
     private List<Product> products;
+    private Guid selectedProductId = Guid.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -131,7 +134,7 @@ img {
         string token = await localStorage.GetItemAsStringAsync("auth");
         Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         var response = await Http.GetFromJsonAsync<PagedList<Product>>($"https://localhost:7228/api/Product/Paginate?PageNumber={currentPage}&PageSize={pageSize}");
-
+        
         if (response != null)
         {
             products = response.Items;
@@ -170,6 +173,16 @@ img {
     }
 
 
+    private void NavigateToProduct(Guid productId)
+    {
+       if (productId == Guid.Empty)
+    {
+        Console.WriteLine("ProductId is empty");
+        return;
+    }
+        Console.WriteLine($"Navigating to product with ID: {productId}");
+        NavManager.NavigateTo($"/product/{productId}");
+    }
 
     public class Product
     {

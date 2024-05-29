@@ -33,6 +33,7 @@ public class ProductService(IProductRepository productRepository) : IProductServ
 
         var items = pagedList.Items.Select(x => new ProductDTO()
         {
+            Id=x.Id,
             Name = x.Name,
             CategoryId = x.CategoryProduct.Id.ToString(),
             CategoryName = x.CategoryProduct.Name,

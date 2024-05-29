@@ -43,6 +43,7 @@ public class ProductController(IProductRepository productRepository, Application
     [HttpGet("GetItem")]
     public IActionResult GetItemById(Guid productId)
     {
+
         var result = productService.GetItem(productId);
         return Ok(result);
     }

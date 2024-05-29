@@ -1,0 +1,377 @@
+﻿@page "/shopingcart"
+
+@using FoodShop.Client.States
+@using NetcodeHub.Packages.Components.Validations.OnInput
+@using Microsoft.AspNetCore.Components.Forms
+@using FoodShop.Application.Interfaces.Identity
+@using FoodShop.Application.DTO
+@using Blazored.LocalStorage
+@using FoodShop.Application.Services.BonusCardService
+@using Syncfusion.Blazor.Core
+@using Syncfusion.Blazor.Internal
+@using FoodShop.Domain.Domain.Entities
+@using System.Text.Json
+
+@inject ILocalStorageService localStorage
+@inject HttpClient Http
+
+<h3>Shopping Cart</h3>
+
+@if (sales == null)
+{
+    <p>Loading...</p>
+}
+else if (!sales.Any())
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <div class="cart-container">
+        <div class="cart-item-titles">
+            <h3 class="product-title">Product</h3>
+            <h3>Quantity</h3>
+            <h3>Price</h3>
+            <h3 class="total">Total</h3>
+        </div>
+      @foreach (var sale in sales)
+    {
+        <div class="cart-item">
+            <div class="cart-product">
+                <button class="clear-btn" @onclick="() => RemoveItemFromCart(sale)" >Удалить из корзины</button>
+                <input type="checkbox" @onchange ="( (ChangeEventArgs e) => UpdateSelectedState(sale.Id,e) ) "></input>
+                <img src="@sale.Product.ImageURL" alt="@sale.Product.Name" />
+            <div>
+                <h3>@sale.Product.Name</h3>
+            </div>
+            </div>
+                <div class="cart-product-quantity">
+                    <div class="count">@sale.Qantity</div>
+            
+                    </div>
+                <div>@sale.Product.Price.ToString("C")</div>
+            <div class="cart-product-total-price">@((sale.Product.Price * sale.Qantity).ToString("C"))</div>
+       
+        </div>
+    }
+       <div class="cart-summary">
+    <button class="clear-btn"  >Очистить корзину</button>
+    <div class="cart-checkout">
+        <div class="subtotal">
+            <span>Сумма к оплате</span>
+            <span class="amount">@((sales.Sum(sale => sale.TotalPrice)-amountToBPaid).ToString("C"))</span>
+        </div>
+        <Label For="paymentAmount"> Введите сумму для оплаты:</Label>
+        <input type="text" id="paymentAmount" @bind="paymentAmount"></input>
+        <p>Выберите способ оплаты</p>
+        <div class="payment-buttons">
+            
+            <button class="bonus-card-btn size" @onclick='() => ProcessPayment("BonusCard")'>Оплатить бонусной картой</button>
+            <button class="cash-btn size"@onclick='() => ProcessPayment("Cash")'>Оплатить наличными</button>
+            <button class="debit-card-btn size"@onclick='() => ProcessPayment("Wallet")'>Оплатить дебетовой картой</button>
+        </div>
+    </div>
+</div>
+ </div>
+}
+
+
+<style>
+    
+    .cart-container {
+        padding: 2rem 4rem;
+        display: flex;
+        flex-direction: column;
+    }
+  .payment-buttons {
+  display: flex; 
+}
+.cart-item-titles{
+    display:flex;
+    border-top: 1px solid rgb(187, 187, 187);
+    padding: 1rem 0;
+}
+
+.payment-buttons button {
+  flex: 1; 
+  height: 150px;
+}
+    .cart-container h2 {
+        font-weight: 400;
+        font-size: 30px;
+        text-align: center;
+    }
+    .cart-container .titles {
+        margin: 2rem 0 1rem 0;
+    }
+    .cart-container .titles h3 {
+        font-size: 14px;
+        font-weight: 400;
+        text-transform: uppercase;
+    }
+    .cart-item,
+    .cart-container .titles {
+        display: grid;
+        align-items: center;
+        grid-template-columns: 3fr 1fr 1fr 1fr;
+        column-gap: 0.5rem;
+    }
+    .cart-item {
+        border-top: 1px solid rgb(187, 187, 187);
+        padding: 1rem 0;
+    }
+    .cart-container .titles .product-title {
+        padding-left: 0.5rem;
+    }
+    .cart-container .titles .total {
+        padding-right: 0.5rem;
+        justify-self: right;
+    }
+    .cart-item .cart-product {
+        display: flex;
+    }
+    .cart-item .cart-product img {
+        width: 100px;
+        max-width: 100%;
+        margin-right: 1rem;
+    }
+    .cart-item .cart-product h3 {
+        font-weight: 400;
+    }
+    .cart-item .cart-product button {
+        border: none;
+        outline: none;
+        margin-top: 0.7rem;
+        cursor: pointer;
+        background: none;
+        color: gray;
+    }
+    .cart-item .cart-product button:hover {
+        color: black;
+    }
+    .payment-buttons {
+        margin-top: 10px;
+    }
+    .payment-buttons button {
+        display: inline-block;
+        margin-right: 10px;
+    }
+    .cart-item .cart-product-quantity {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        width: 130px;
+        max-width: 100%;
+        border: 0.5px solid rgb(177, 177, 177);
+        border-radius: 5px;
+    }
+    .cart-item .cart-product-quantity button {
+        border: none;
+        outline: none;
+        background: none;
+        padding: 0.7rem 1.5rem;
+        cursor: pointer;
+    }
+    .cart-item .cart-product-quantity .count {
+        padding: 0.7rem 0;
+    }
+    .cart-item .cart-product-total-price {
+        padding-right: 0.5rem;
+        justify-self: right;
+        font-weight: 700;
+    }
+ 
+    .cart-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-top: 1px solid rgb(187, 187, 187);
+        padding-top: 2rem;
+    }
+    .cart-summary .clear-btn {
+        width: 130px;
+        height: 40px;
+        border-radius: 5px;
+        font-weight: 400;
+        letter-spacing: 1.15px;
+        border: 0.5px solid rgb(177, 177, 177);
+        color: gray;
+        background: none;
+        outline: none;
+        cursor: pointer;
+    }
+    .cart-checkout {
+        width: 270px;
+        max-width: 100%;
+    }
+    .cart-checkout .subtotal {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+    }
+    .cart-checkout .amount {
+        font-weight: 700;
+    }
+    .cart-checkout p {
+        font-size: 14px;
+        font-weight: 200;
+        margin: 0.5rem 0;
+    }
+    .cart-checkout button {
+        width: 100%;
+        height: 40px;
+        border-radius: 5px;
+        font-weight: 400;
+        letter-spacing: 1.15px;
+        background-color: #4b70e2;
+        color: #f9f9f9;
+        border: none;
+        outline: none;
+        cursor: pointer;
+    }
+    .continue-shopping,
+    .start-shopping {
+        margin-top: 1rem;
+    }
+    .continue-shopping a,
+    .start-shopping a {
+        color: gray;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+    .continue-shopping a span,
+    .start-shopping a span {
+        margin-left: 0.5rem;
+    }
+    .cart-empty {
+        font-size: 20px;
+        margin-top: 2rem;
+        color: rgb(84, 84, 84);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    {
+        .cart-container {
+            padding: 2rem;
+        }
+        .cart-container .titles {
+            display: none;
+        }
+        .cart-item,
+        .cart-container .titles {
+            grid-template-columns: 1fr;
+            row-gap: 1rem;
+        }
+        .cart-item .cart-product-total-price {
+            justify-self: left;
+        }
+        .cart-summary {
+            flex-direction: column;
+        }
+        .cart-summary .clear-btn {
+            margin-bottom: 2rem;
+        }
+    }
+</style>
+
+
+@code {
+    public List<SaleDTO> sales;
+    private string paymentAmount;
+    [Parameter] public Guid ProductId { get; set; }
+    public decimal amountToBPaid = 0;
+    public bool checkboxClick = false;
+    string? Message = string.Empty;
+
+    private Dictionary<Guid, bool> selectedStates = new Dictionary<Guid, bool>();
+
+
+    // Метод для обновления состояния чекбокса и сохранения его в localStorage
+    private async Task UpdateSelectedState(Guid saleId, ChangeEventArgs e)
+    {
+        selectedStates = await localStorage.GetItemAsync<Dictionary<Guid, bool>>("selectedStates");
+        Console.WriteLine(saleId);
+        bool isChecked = (bool)e.Value;
+
+        selectedStates[saleId] = isChecked;
+
+        await localStorage.SetItemAsync("selectedStates", selectedStates);
+    }
+
+    private async Task ProcessPayment(string paymnet)
+    {
+        decimal sumSalesTotalPrice = 0;
+
+        var selectedSales = sales.Where(sale => selectedStates.ContainsKey(sale.Id)&& selectedStates[sale.Id]).ToList();
+
+        if(paymnet == "Cash")
+        {
+            amountToBPaid += decimal.Parse(paymentAmount);
+            var order = new CreateOrderDTO
+            {
+                Payment = WayOfPayment.CashPayment,
+
+                Sales = selectedSales.Select(x => new CreateOrderSaleDTO()
+                {
+                    Id = x.Id,
+                    ProductId = x.ProductId,
+                    Qantity = x.Qantity,
+                    TotalPrice = x.TotalPrice,
+                }).ToList()
+            };
+            
+            foreach(var sale in selectedSales)
+            {
+                sumSalesTotalPrice +=  sale.TotalPrice;
+            }
+
+            if(decimal.Parse(paymentAmount) < sumSalesTotalPrice)
+            {
+                throw new Exception("NET");
+            }
+
+            var response = await Http.PostAsJsonAsync<CreateOrderDTO>("https://localhost:7228/api/Order/Create", order);
+            response.EnsureSuccessStatusCode();
+
+            foreach(var sale in selectedSales.ToList())
+            {
+                await RemoveItemFromCart(sale);
+            }
+          
+        }
+    }
+    private async Task RemoveItemFromCart(SaleDTO sale)
+    {
+        sales.Remove(sale);
+        await localStorage.SetItemAsync("sale", sales);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = await localStorage.GetItemAsStringAsync("auth");
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        selectedStates = await localStorage.GetItemAsync<Dictionary<Guid, bool>>("selectedStates") ?? new Dictionary<Guid, bool>();
+
+        sales = await localStorage.GetItemAsync<List<SaleDTO>>("sale") ?? new List<SaleDTO>();
+      
+        foreach (var sale in sales)
+        {
+            Console.WriteLine($"ProductId: {sale.ProductId}"); // Вывод для проверки
+            if (sale.ProductId != null) 
+            {
+                sale.Product = await GetProductByIdAsync(sale.ProductId);
+            }
+        }
+        await localStorage.SetItemAsync("sale", sales);
+    }
+
+    private async Task<ProductDTO> GetProductByIdAsync(Guid productId)
+    {
+        ProductId = productId;
+        return await Http.GetFromJsonAsync<ProductDTO>($"https://localhost:7228/api/Product/GetItem?productId={ProductId}");
+    }
+    
+}

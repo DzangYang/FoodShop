@@ -31,4 +31,8 @@ public class Sale : EntityBase
     /// Количество товара в продаже
     /// </summary>
     public int Qantity { get; set; }
+    /// <summary>
+    /// Итоговая сумма продажи
+    /// </summary>
+    public decimal TotalPrice { get; set; }
 }

@@ -28,7 +28,7 @@ public class ProductDTO
     /// <summary>
     /// Список продаж товара
     /// </summary>
-    public IList<Sale> Sales { get; set; }
+   
     public string CategoryName { get; set; }
     public string CategoryId { get; set; }
 }

@@ -4,6 +4,7 @@ using FoodShop.Domain.Domain.Entities;
 using FoodShop.Persistance.EntityTypeConfigurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FoodShop.Persistance.Database;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Role, Guid>, IMerchandiseShopDbContext
@@ -15,10 +16,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Role, Gui
     public DbSet<ApplicationUser> Users { get; set; }
     public DbSet<BonusCard> BonusCards { get; set; }
     public DbSet<Wallet> Wallets { get; set; }
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    public ApplicationDbContext()
+    {
+        
+    }
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+        : base(options)
     {
 
     }
+
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
