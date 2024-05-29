@@ -1,0 +1,239 @@
+﻿@page "/product/{ProductId:guid}"
+@using Blazored.LocalStorage
+@using FoodShop.Domain.Domain.Entities
+@inject ILocalStorageService localStorage
+@inject HttpClient Http
+
+<h3>Детали продукта</h3>
+
+@if (productDTO != null)
+{
+    <div class="product-details">
+        <img src="@productDTO.ImageURL" alt="@productDTO.Name" style="transform: scale(0.5);" class="product-image" />
+        <div class="product-info">
+            <h4>@productDTO.Name</h4>
+            <p>Цена: @productDTO.Price.ToString("C")</p>
+            <p>Категория: @productDTO.CategoryName</p>
+            
+            <div class="btn-group">
+                @if (productDTO.CategoryName == "Овощи" || productDTO.CategoryName == "Фрукты" || productDTO.CategoryName == "Сладости")
+                {
+                    <label>Введите количество грамм:</label>
+                    <input type="number" @bind="weightInGrams" min="0" />
+                    <button class="weigh-btn" @onclick="() => WeighProduct(weightInGrams, productDTO.Price, productDTO.CategoryName)">Взвесить</button>
+                }
+                <label>Введите количество товара:</label>
+                <input type="number" @bind="quantity" min="1" />
+                <button class="add-to-cart-btn" @onclick="() =>  AddToCart(productDTO)" disabled="@(productDTO.CategoryName == "Овощи" || productDTO.CategoryName == "Фрукты" || productDTO.CategoryName == "Сладости" ? !existFromWeighProduct : false)">Добавить в корзину</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+
+<style>
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        width: 20%;
+    }
+
+    .weigh-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: red;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .weigh-btn:hover {
+        background-color: darkred;
+    }
+
+    .product-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .product-image {
+        width: 700px;
+        height: auto;
+        margin-right: 20px;
+    }
+
+    .product-info {
+        flex-grow: 1;
+    }
+
+    .add-to-cart-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .add-to-cart-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .add-to-cart-btn:disabled {
+        background-color: #cccccc; /* Светло-серый фон для отключенной кнопки */
+        color: #666666; /* Темно-серый текст для отключенной кнопки */
+        cursor: not-allowed; /* Изменение курсора при отключенной кнопке */
+    }
+</style>
+
+
+@code {
+    [Parameter] public Guid ProductId { get; set; }
+
+    private ProductDTO productDTO;
+    private decimal weightInGrams;
+    private int quantity = 1; // Добавлена переменная для хранения количества товара
+    public SaleDTO pendingSale;
+    public decimal totalPrice;
+    public bool existFromWeighProduct = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadProduct();
+    }
+
+    private async void NavigateToProduct(Guid productId)
+    {
+        Console.WriteLine($"ANDREY CHROT  = {productId}");
+        // var token = await localStorage.GetItemAsStringAsync("auth");
+        localStorage.SetItemAsStringAsync(productId.ToString(), "anrdey");
+
+    }
+    private async Task WeighProduct(decimal amountGramm, decimal productPrice, string productCategoryName)
+    {
+        // Ваша логика для взвешивания товара и добавления в корзину
+
+        decimal pricePerUnit;
+        if (productCategoryName == "Сладости")
+        {
+            // Цена за 100 грамм
+            pricePerUnit = productPrice / 100;
+        }
+        else if (productCategoryName == "Овощи" || productCategoryName == "Фрукты")
+        {
+            // Цена за 1000 грамм (1 кг)
+            pricePerUnit = productPrice / 1000;
+        }
+        else
+        {
+            throw new InvalidOperationException("Неподдерживаемая категория продукта для взвешивания.");
+        }
+
+        totalPrice = amountGramm * pricePerUnit * quantity;
+
+        existFromWeighProduct = true;
+
+    }
+
+    public async Task GetNoWeightProductTotalPrice(ProductDTO product)
+    {
+        totalPrice = product.Price * quantity;
+    }
+
+    private async Task AddToCart(ProductDTO product)
+    {
+        if(product.CategoryName != "Овощи" || product.CategoryName != "Фрукты" || product.CategoryName == "Сладостии")
+        {
+             GetNoWeightProductTotalPrice(product);
+        }
+        pendingSale = new SaleDTO
+        {
+             Id = Guid.NewGuid(),
+             ProductId = product.Id,
+         
+             Qantity = quantity,
+             TotalPrice = totalPrice
+        };
+
+        var exist = await localStorage.ContainKeyAsync("sale");
+        if (exist)
+        {
+            var res = await localStorage.GetItemAsync<List<SaleDTO>>("sale");
+            if (res == null)
+                return;
+            
+            res.Add(pendingSale);
+            await localStorage.SetItemAsync("sale", res);
+        }
+        else
+        {
+           
+            await localStorage.SetItemAsync<List<SaleDTO>>("sale", [pendingSale]);
+        }
+
+
+    }
+
+
+    private async Task LoadProduct()
+    {
+        string token = await localStorage.GetItemAsStringAsync("auth");
+
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        try
+        {
+            // Исправлен URL для запроса
+            productDTO = await Http.GetFromJsonAsync<ProductDTO>($"https://localhost:7228/api/Product/GetItem?productId={ProductId}");
+            // Проверка на null уже не требуется, так как productDTO напрямую присваивается
+        }
+        catch (HttpRequestException ex)
+        {
+            // Логирование ошибки или ее обработка
+            Console.WriteLine($"Error fetching product: {ex.Message}");
+        }
+    }
+
+    public class SaleDTO
+    {
+        public Guid Id { get; set; }
+        /// <summary>
+        /// Айди товара
+        /// </summary>
+        public Guid ProductId { get; set; }
+
+        /// <summary>
+        /// Товар
+        /// </summary>
+        public ProductDTO Product { get; set; }
+
+        /// <summary>
+        /// Количество товара в продаже
+        /// </summary>
+        public int Qantity { get; set; }
+
+        public decimal TotalPrice { get; set; }
+        public bool AddedWithoutWeighing { get; set; } // Флаг добавления без взвешивания
+    }
+    public class ProductDTO
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string ImageURL { get; set; }
+        public string CategoryName { get; set; }
+        public string CategoryId { get; set; }
+        
+    }
+}

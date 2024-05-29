@@ -1,0 +1,54 @@
+﻿@page "/bonuscard"
+@using FoodShop.Client.States
+@using NetcodeHub.Packages.Components.Validations.OnInput
+@using Microsoft.AspNetCore.Components.Forms
+@using FoodShop.Application.Interfaces.Identity
+@using FoodShop.Application.DTO
+@using Blazored.LocalStorage;
+@using FoodShop.Application.Services.BonusCardService
+
+@inject ILocalStorageService localStorage
+
+@inject HttpClient Http
+
+
+<h3>Данные бонусной карты</h3>
+
+<div class="row">
+    <div class="col-lg-5">
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <div class="alert alert-info">@Message</div>
+        }
+
+        <button class="btn btn-primary mb-3" @onclick="AddBonusCard">Создать бонусную карту</button>
+    </div>
+</div>
+
+
+
+@code {
+
+    string? Message = string.Empty;
+
+    public async void AddBonusCard()
+    {
+        string token = await localStorage.GetItemAsStringAsync("auth");
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        var response = await Http.PostAsync("https://localhost:7228/api/BonusCard", null);
+        response.EnsureSuccessStatusCode();
+
+        if (response.IsSuccessStatusCode)
+        {
+            Message = "Бонусная карта успешно создана!";
+        }
+        else
+        {
+            Message = $"Ошибка при создании бонусной карты: {response.ReasonPhrase}";
+        }
+       
+    }
+
+
+   
+}
