@@ -5,6 +5,7 @@ namespace FoodShop.Application.Services.BonusCardService;
 public class BonusCardService(IBonusCardRepository bonusCardRepository,
     ICurrentUserService currentUserService) : IBonusCardService
 {
+    private string Message = string.Empty;
     public void Cancellation(int amount)
     {
         try
@@ -14,14 +15,17 @@ public class BonusCardService(IBonusCardRepository bonusCardRepository,
 
             var currentBonusCard = bonusCardRepository.GetByUserId(currentUserService.Id);
 
+            if (currentBonusCard.Amount < amount)
+                throw new Exception("Ошибка, недостаточно, бонусов для оплаты");
+
             currentBonusCard.Amount -= amount;
         }
-        catch 
+        catch (Exception ex)
         {
-
-            throw new Exception("Ошибка списания бонусов");
+            // Логгирование ошибки, если необходимо
+            throw new Exception(Message = "Ошибка списания бонусов");
         }
-       
+
     }
 
     public void Create()

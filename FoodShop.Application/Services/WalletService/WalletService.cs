@@ -9,9 +9,15 @@ public class WalletService(IWalletRepository walletRepository, ICurrentUserServi
     public async Task Cancellation(int amount)
     {
         var findWallet = walletRepository.ExistForUser(currentUserService.Id);
-        if (!findWallet) throw new Exception("Безналичная карта не привязана");
+
+        if (!findWallet) 
+            throw new Exception("Безналичная карта не привязана");
 
         var wallet = walletRepository.GetByUserId(currentUserService.Id);
+
+        if (wallet.Amount < amount)
+            throw new Exception("Ошибка недостаточно средств на карте для оплаты");
+
         wallet.Amount -= amount;
 
     }

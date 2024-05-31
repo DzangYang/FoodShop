@@ -13,9 +13,17 @@ public class CashPaymentController(ICashPaymentService cashPaymentService) : Con
     {
         if (amount <= 0)
             return BadRequest();
+        try
+        {
+            await cashPaymentService.Cancellation(amount);
+            return Ok();
+        }
+        catch (Exception)
+        {
 
-        await cashPaymentService.Cancellation(amount);
-        return Ok();
+            return BadRequest("Ошибка недостаточно средств в кошельке");
+        }
+       
     }
 
 }

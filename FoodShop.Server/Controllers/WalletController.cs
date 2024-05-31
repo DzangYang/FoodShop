@@ -27,8 +27,17 @@ public class WalletController(IWalletService walletService, ApplicationDbContext
     [HttpPut("amount")]
     public async Task<IActionResult> Decreese(int amount)
     {
-         await walletService.Cancellation(amount);
-         dbContext.SaveChanges();
-         return Ok();
+        try
+        {
+            await walletService.Cancellation(amount);
+            dbContext.SaveChanges();
+            return Ok();
+        }
+        catch (Exception)
+        {
+
+            return BadRequest("Ошибка, недостаточно средств на карте");
+        }
+         
     }
 }

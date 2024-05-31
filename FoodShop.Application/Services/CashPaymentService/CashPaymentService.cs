@@ -10,10 +10,9 @@ public class CashPaymentService(ICurrentUserService currentUserService, UserMana
     {
 
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == currentUserService.Id);
-        if (user == null)
-        {
 
-        }
+        if(user.Cash < amount)
+            throw new Exception("Ошибка, недостаточно средств");
 
         user.Cash -= amount;
 
