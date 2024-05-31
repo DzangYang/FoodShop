@@ -12,9 +12,10 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <param name="pageNumber">Номер страницы</param>
     /// <param name="items"></param>
     /// <returns></returns>
-    PagedList<Product> GetPaginated(int pageSize, int pageNumber);
+    Task<PagedList<Product>> GetPaginated(int pageSize, int pageNumber);
 
     Product GetItemById(Guid productId);
+    Task<CategoryProduct> GetCategoryById(Guid categoryId);
 
 
 }

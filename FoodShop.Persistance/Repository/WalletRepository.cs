@@ -22,7 +22,7 @@ public class WalletRepository(ApplicationDbContext dbContext) : IWalletRepositor
 
     public bool ExistForUser(Guid userId)
     {
-        var user = dbContext.Wallets.Any(u => u.Id == userId);
+        var user = dbContext.Wallets.Any(u => u.UserId == userId);
         if (!user) return false;
         return true;
     }
@@ -34,7 +34,7 @@ public class WalletRepository(ApplicationDbContext dbContext) : IWalletRepositor
 
     public Wallet GetByUserId(Guid userId)
     {
-        var wallet = dbContext.Wallets.FirstOrDefault(u => u.Id == userId);
+        var wallet = dbContext.Wallets.FirstOrDefault(u => u.UserId == userId);
 
         return wallet;
     }

@@ -8,9 +8,17 @@ public class CashPaymentService(ICurrentUserService currentUserService, UserMana
 {
     public async Task Cancellation(int amount)
     {
+
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == currentUserService.Id);
+        if (user == null)
+        {
+
+        }
+
         user.Cash -= amount;
+
         await _userManager.UpdateAsync(user);
+
 
     }
 }

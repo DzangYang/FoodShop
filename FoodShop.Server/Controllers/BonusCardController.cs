@@ -9,15 +9,25 @@ public class BonusCardController(ApplicationDbContext dbContext, IBonusCardServi
 {
 
     [HttpPost]
-    public void CreateBonusCard()
+    public async Task<IActionResult> CreateBonusCard()
     {
         bonusCardService.Create();
+        return Ok();
     }
 
     [HttpPost("amount")]
-    public void AddBonus(int amount)
+    public async Task<IActionResult> AddBonus(int amount)
     {
         bonusCardService.CreateBonuses(amount);
         dbContext.SaveChanges();
+        return Ok();
+    }
+
+    [HttpPut("cancellation")]
+    public async Task<IActionResult> Cancellation(int amount)
+    {
+        bonusCardService.Cancellation(amount);
+        dbContext.SaveChanges();
+        return Ok();
     }
 }

@@ -15,7 +15,7 @@
 @inject ILocalStorageService localStorage
 @inject HttpClient Http
 
-<h3>Shopping Cart</h3>
+<h1>Shopping Cart</h1>
 
 @if (sales == null)
 {
@@ -28,74 +28,151 @@ else if (!sales.Any())
 else
 {
     <div class="cart-container">
-        <div class="cart-item-titles">
+        <h3> </h3>
             <h3 class="product-title">Product</h3>
             <h3>Quantity</h3>
             <h3>Price</h3>
             <h3 class="total">Total</h3>
-        </div>
+
       @foreach (var sale in sales)
     {
-        <div class="cart-item">
-            <div class="cart-product">
-                <button class="clear-btn" @onclick="() => RemoveItemFromCart(sale)" >Удалить из корзины</button>
-                <input type="checkbox" @onchange ="( (ChangeEventArgs e) => UpdateSelectedState(sale.Id,e) ) "></input>
-                <img src="@sale.Product.ImageURL" alt="@sale.Product.Name" />
-            <div>
-                <h3>@sale.Product.Name</h3>
-            </div>
-            </div>
-                <div class="cart-product-quantity">
-                    <div class="count">@sale.Qantity</div>
-            
-                    </div>
-                <div>@sale.Product.Price.ToString("C")</div>
-            <div class="cart-product-total-price">@((sale.Product.Price * sale.Qantity).ToString("C"))</div>
-       
+        <div>
+            <button class="clear-btn" @onclick="() => RemoveItemFromCart(sale)" >Удалить из корзины</button>
         </div>
+        <div class="cart-product">
+               <input class="checkbox_input" type="checkbox" @onchange ="( (ChangeEventArgs e) => UpdateSelectedState(sale.Id,e) ) "></input>
+              <div>
+                  <img width="75"  src="@sale.Product.ImageURL" alt="@sale.Product.Name" />
+                  <h3>@sale.Product.Name</h3>
+              </div>
+        </div>
+           <h3 class="count">@sale.Qantity</h3>
+           <h3>@sale.Product.Price.ToString("C")</h3>
+           <h3 class="cart-product-total-price">@((sale.Product.Price * sale.Qantity).ToString("C"))</h3>
     }
-       <div class="cart-summary">
-    <button class="clear-btn"  >Очистить корзину</button>
+    </div>
+
+    <button class="clear-all-btn"  >Очистить корзину</button>
+ 
     <div class="cart-checkout">
         <div class="subtotal">
-            <span>Сумма к оплате</span>
-            <span class="amount">@((sales.Sum(sale => sale.TotalPrice)-amountToBPaid).ToString("C"))</span>
+            <h3>Сумма к оплате</h3>
+            <h3 >@((sales.Sum(sale => sale.TotalPrice)).ToString("C"))</h3>
         </div>
         <Label For="paymentAmount"> Введите сумму для оплаты:</Label>
-        <input type="text" id="paymentAmount" @bind="paymentAmount"></input>
-        <p>Выберите способ оплаты</p>
+        <input class="payment_input" type="text" id="paymentAmount" @bind="paymentAmount"></input>
+        <div class="checkout_container">
+
+        <h3>Выберите способ оплаты</h3>
         <div class="payment-buttons">
             
-            <button class="bonus-card-btn size" @onclick='() => ProcessPayment("BonusCard")'>Оплатить бонусной картой</button>
-            <button class="cash-btn size"@onclick='() => ProcessPayment("Cash")'>Оплатить наличными</button>
-            <button class="debit-card-btn size"@onclick='() => ProcessPayment("Wallet")'>Оплатить дебетовой картой</button>
+            <button class="checkout_btn" @onclick='() => ProcessPayment("BonusCard")'>Оплатить бонусной картой</button>
+            <button class="checkout_btn"@onclick='() => ProcessPayment("Cash")'>Оплатить наличными</button>
+            <button class="checkout_btn"@onclick='() => ProcessPayment("Wallet")'>Оплатить дебетовой картой</button>
         </div>
-    </div>
+     </div>
 </div>
- </div>
+ 
 }
 
 
 <style>
     
     .cart-container {
-        padding: 2rem 4rem;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .clear-btn {
+        background-color: #8b5cf6;
+        padding: 16px 20px;
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+    .clear-btn:hover {
+        cursor: pointer;
+        background-color: #a78bfa;
+    }
+
+    .clear-all-btn{
+        background-color: #e11d48;
+        padding: 16px 20px;
+        border: none;
+        border-radius: 0.5rem;
+        margin-top:2rem;
+        margin-bottom: 3rem;
+    }
+
+        .clear-all-btn:hover {
+        cursor: pointer;
+        background-color: #f43f5e;
+    }
+
+    .checkbox_input{
+        width: 20px;
+        height: 20px;
+    }
+
+    .cart-product {
+     display: flex;
+    align-items: center;
+    gap: 1rem;
+    }
+
+    .cart_checkout {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        gap: 2rem;
     }
-  .payment-buttons {
-  display: flex; 
+
+    .checkout_container{
+        display: flex;
+        flex-direction:column;
+        align-items: center;
+    }
+
+    .payment-buttons {
+        margin-top: 1.5rem;
+        margin-bottom: 4rem;
+        display: flex;
+        gap: 3rem;
+    }
+
+    .checkout_btn {
+        background-color: #6366f1;
+        padding: 16px 20px;
+        border: none;
+        border-radius: 0.5rem;
+
+    }
+
+        .checkout_btn:hover {
+        background-color: #818cf8;
+    }
+
+
+    .subtotal {
+        display: flex;
+        gap: 1rem;
+    }
+
+.payment_input {
+    padding: 4px;
+    border-radius: 0.25rem;
 }
+
 .cart-item-titles{
     display:flex;
     border-top: 1px solid rgb(187, 187, 187);
     padding: 1rem 0;
 }
 
-.payment-buttons button {
-  flex: 1; 
-  height: 150px;
-}
+
     .cart-container h2 {
         font-weight: 400;
         font-size: 30px;
@@ -109,13 +186,7 @@ else
         font-weight: 400;
         text-transform: uppercase;
     }
-    .cart-item,
-    .cart-container .titles {
-        display: grid;
-        align-items: center;
-        grid-template-columns: 3fr 1fr 1fr 1fr;
-        column-gap: 0.5rem;
-    }
+
     .cart-item {
         border-top: 1px solid rgb(187, 187, 187);
         padding: 1rem 0;
@@ -149,13 +220,7 @@ else
     .cart-item .cart-product button:hover {
         color: black;
     }
-    .payment-buttons {
-        margin-top: 10px;
-    }
-    .payment-buttons button {
-        display: inline-block;
-        margin-right: 10px;
-    }
+ 
     .cart-item .cart-product-quantity {
         display: flex;
         align-items: flex-start;
@@ -185,50 +250,9 @@ else
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        border-top: 1px solid rgb(187, 187, 187);
         padding-top: 2rem;
     }
-    .cart-summary .clear-btn {
-        width: 130px;
-        height: 40px;
-        border-radius: 5px;
-        font-weight: 400;
-        letter-spacing: 1.15px;
-        border: 0.5px solid rgb(177, 177, 177);
-        color: gray;
-        background: none;
-        outline: none;
-        cursor: pointer;
-    }
-    .cart-checkout {
-        width: 270px;
-        max-width: 100%;
-    }
-    .cart-checkout .subtotal {
-        display: flex;
-        justify-content: space-between;
-        font-size: 20px;
-    }
-    .cart-checkout .amount {
-        font-weight: 700;
-    }
-    .cart-checkout p {
-        font-size: 14px;
-        font-weight: 200;
-        margin: 0.5rem 0;
-    }
-    .cart-checkout button {
-        width: 100%;
-        height: 40px;
-        border-radius: 5px;
-        font-weight: 400;
-        letter-spacing: 1.15px;
-        background-color: #4b70e2;
-        color: #f9f9f9;
-        border: none;
-        outline: none;
-        cursor: pointer;
-    }
+
     .continue-shopping,
     .start-shopping {
         margin-top: 1rem;
@@ -282,12 +306,33 @@ else
     public List<SaleDTO> sales;
     private string paymentAmount;
     [Parameter] public Guid ProductId { get; set; }
-    public decimal amountToBPaid = 0;
+    public int amountToBPaid = 0;
     public bool checkboxClick = false;
     string? Message = string.Empty;
 
     private Dictionary<Guid, bool> selectedStates = new Dictionary<Guid, bool>();
 
+    public async Task<WayOfPayment> PaymentSelection(string wayOfPayment)
+    {
+        WayOfPayment type;
+
+        switch (wayOfPayment)
+        {
+            case "Cash": 
+                type = WayOfPayment.CashPayment;
+                break;
+            case "BonusCard":
+                type = WayOfPayment.BonusCard;
+                break;
+            case "Wallet":
+                type = WayOfPayment.Wallet;
+                break;
+            default:
+                throw new ArgumentException("Invalid payment method", nameof(wayOfPayment));
+        }
+
+        return type;
+    }
 
     // Метод для обновления состояния чекбокса и сохранения его в localStorage
     private async Task UpdateSelectedState(Guid saleId, ChangeEventArgs e)
@@ -301,48 +346,65 @@ else
         await localStorage.SetItemAsync("selectedStates", selectedStates);
     }
 
-    private async Task ProcessPayment(string paymnet)
+    private async Task ProcessPayment(string payment)
     {
         decimal sumSalesTotalPrice = 0;
 
         var selectedSales = sales.Where(sale => selectedStates.ContainsKey(sale.Id)&& selectedStates[sale.Id]).ToList();
+        amountToBPaid += int.Parse(paymentAmount);
 
-        if(paymnet == "Cash")
+        var order = new CreateOrderDTO
         {
-            amountToBPaid += decimal.Parse(paymentAmount);
-            var order = new CreateOrderDTO
-            {
-                Payment = WayOfPayment.CashPayment,
+              Payment = await PaymentSelection(payment),
 
-                Sales = selectedSales.Select(x => new CreateOrderSaleDTO()
-                {
-                    Id = x.Id,
-                    ProductId = x.ProductId,
-                    Qantity = x.Qantity,
-                    TotalPrice = x.TotalPrice,
-                }).ToList()
-            };
-            
-            foreach(var sale in selectedSales)
-            {
-                sumSalesTotalPrice +=  sale.TotalPrice;
-            }
+              Sales = selectedSales.Select(x => new CreateOrderSaleDTO()
+              {
+                  Id = x.Id,
+                  ProductId = x.ProductId,
+                  Qantity = x.Qantity,
+                  TotalPrice = x.TotalPrice,
+              }).ToList()
+        };
+        
 
-            if(decimal.Parse(paymentAmount) < sumSalesTotalPrice)
-            {
-                throw new Exception("NET");
-            }
+        await Cancellation(order.Payment, amountToBPaid);
+        Console.WriteLine(order.Payment);
 
-            var response = await Http.PostAsJsonAsync<CreateOrderDTO>("https://localhost:7228/api/Order/Create", order);
-            response.EnsureSuccessStatusCode();
-
-            foreach(var sale in selectedSales.ToList())
-            {
-                await RemoveItemFromCart(sale);
-            }
-          
+        foreach(var sale in selectedSales)
+        {
+            sumSalesTotalPrice +=  sale.TotalPrice;
         }
+
+        var response = await Http.PostAsJsonAsync<CreateOrderDTO>("https://localhost:7228/api/Order/Create", order);
+        response.EnsureSuccessStatusCode();
+
+        foreach(var sale in selectedSales.ToList())
+        {
+            await RemoveItemFromCart(sale);
+        }
+         StateHasChanged();
     }
+
+    public async Task Cancellation(WayOfPayment typePayment, int amount)
+    {
+        switch (typePayment)
+        {
+            case WayOfPayment.CashPayment :
+                await Http.PutAsJsonAsync($"https://localhost:7228/api/CashPayment/amount?amount={amount}", amount);
+                await Http.PostAsJsonAsync($"https://localhost:7228/api/BonusCard/amount?amount={amount}", amount);
+                break;
+            case WayOfPayment.Wallet:
+                await Http.PutAsJsonAsync($"https://localhost:7228/api/Wallet/amount?amount={amount}", amount);
+                await Http.PostAsJsonAsync($"https://localhost:7228/api/BonusCard/amount?amount={amount}", amount);
+                break;
+            case WayOfPayment.BonusCard:
+                await Http.PutAsJsonAsync($"https://localhost:7228/api/BonusCard/cancellation?amount={amount}", amount);
+                break;
+        }
+        return;
+    }
+
+
     private async Task RemoveItemFromCart(SaleDTO sale)
     {
         sales.Remove(sale);

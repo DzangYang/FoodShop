@@ -258,7 +258,8 @@ namespace FoodShop.Persistance.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     OrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Qantity = table.Column<int>(type: "integer", nullable: false)
+                    Qantity = table.Column<int>(type: "integer", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,11 +283,11 @@ namespace FoodShop.Persistance.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"), "Хлеб и выпечка" },
-                    { new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"), "Овощи" },
-                    { new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"), "Фрукты" },
-                    { new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"), "Молочные продукты" },
-                    { new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"), "Сладости" }
+                    { new Guid("47a71f1e-e386-404c-a38a-a0172124ebd8"), "Сладости" },
+                    { new Guid("6368c3a6-371b-4e71-9368-259962da5dc0"), "Хлеб и выпечка" },
+                    { new Guid("7ecc616c-f09b-44d4-83ab-c4d31e237eb5"), "Фрукты" },
+                    { new Guid("97fba9e2-0ce4-4175-a135-f687287582b1"), "Овощи" },
+                    { new Guid("f1de3e56-cee8-43f9-a90d-61e21feb262b"), "Молочные продукты" }
                 });
 
             migrationBuilder.InsertData(
@@ -294,30 +295,30 @@ namespace FoodShop.Persistance.Migrations
                 columns: new[] { "Id", "CategoryProductId", "ImageURL", "Name", "Price" },
                 values: new object[,]
                 {
-                    { new Guid("0247fbd8-098a-4a98-8fe5-4a2c953b267b"), new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"), "/ImagesForCursach/Sweets/Snickers.png", "Шоколадный батончик", 50m },
-                    { new Guid("0f5b4833-1f9f-4730-9048-ac106f7fdb1a"), new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"), "/ImagesForCursach/BreadAndPastries/BreadAndRollRaisin.png", "Булочка с изюмом", 40m },
-                    { new Guid("26855f80-25f1-40b1-9d0b-a1e40b085b6d"), new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"), "/ImagesForCursach/MilkProducts/Milk.png", "Молоко", 80m },
-                    { new Guid("26f0cd6f-1f7e-49f1-8a0b-94d1ba03471d"), new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"), "/ImagesForCursach/BreadAndPastries/Baton.png", "Батон", 25m },
-                    { new Guid("394497ab-9cdc-447e-ae73-dac010f3ba3f"), new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"), "/ImagesForCursach/Sweets/Marmalade.png", "Мармелад", 40m },
-                    { new Guid("44d20ea0-ede1-47d5-8e3e-d8adc8e6d86a"), new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"), "/ImagesForCursach/Sweets/Candy.png", "Конфеты", 25m },
-                    { new Guid("499002a8-69da-4c0c-ac48-7e28b00d7ce8"), new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"), "/ImagesForCursach/BreadAndPastries/Bread.png", "Хлеб белый", 35m },
-                    { new Guid("695f7260-8124-4aa5-b90d-830c696b8810"), new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"), "/ImagesForCursach/Fruits/Apples.png", "Яблоки", 80m },
-                    { new Guid("6fe3639a-7d6e-46fb-bf59-818eb571f1ff"), new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"), "/ImagesForCursach/Fruits/Oranges.png", "Апельсины", 60m },
-                    { new Guid("82f7154a-b92e-4260-95dc-251b719bbc02"), new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"), "/ImagesForCursach/Vegetabbles/Carrots.png", "Морковь", 50m },
-                    { new Guid("85dd0fac-318c-4510-ae16-8d89c7456993"), new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"), "/ImagesForCursach/Vegetabbles/Potatoes.png", "Картофель", 40m },
-                    { new Guid("8a62fc24-1d1e-4fc4-b23a-89d8ed34bd80"), new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"), "/ImagesForCursach/BreadAndPastries/CheseCake.png", "Ватрушка", 50m },
-                    { new Guid("9075ac9b-9e53-450c-aedb-56e1e81407b0"), new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"), "/ImagesForCursach/MilkProducts/ButterMilk.png", "Кефир", 50m },
-                    { new Guid("956e5135-227e-4298-8ba9-060efc96fd0f"), new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"), "/ImagesForCursach/Vegetabbles/Onions.png", "Лук", 30m },
-                    { new Guid("9fb80e12-82dc-449a-a3f4-48e4f0080298"), new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"), "/ImagesForCursach/Fruits/Grapefruit.png", "Грейпфрут", 55m },
-                    { new Guid("a876cf0b-6805-4a9e-a39b-18390e58e342"), new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"), "/ImagesForCursach/Fruits/Pears.png", "Груши", 45m },
-                    { new Guid("ac54bcfa-343e-4394-bdc8-d58d9e2ebb32"), new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"), "/ImagesForCursach/Vegetabbles/Cucumbers.png", "Огурцы", 70m },
-                    { new Guid("baaccf4c-09e3-4f64-a01b-9cbd301f2eeb"), new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"), "/ImagesForCursach/BreadAndPastries/AppleCake.png", "Пирог с яблоками", 120m },
-                    { new Guid("ca394d54-8b6a-4764-b972-f5217745fc83"), new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"), "/ImagesForCursach/Sweets/Biscuits.png", "Печенье", 30m },
-                    { new Guid("d87f243b-865c-41d1-adee-09616642f6c2"), new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"), "/ImagesForCursach/MilkProducts/SourCream.png", "Сметана", 60m },
-                    { new Guid("e1df5688-59f9-4a2e-b570-f2af89bbbe2c"), new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"), "/ImagesForCursach/Vegetabbles/Tomatoes.png", "Помидоры", 65m },
-                    { new Guid("e2e05228-f208-44af-8c57-c6549b8b31aa"), new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"), "/ImagesForCursach/Sweets/IceCream.png", "Мороженое", 100m },
-                    { new Guid("e3d6f06c-fa2a-4455-b77c-b9b5bf35e847"), new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"), "/ImagesForCursach/MilkProducts/Yoghurt.png", "Йогурт", 40m },
-                    { new Guid("eec7a8eb-3b29-4248-8116-f9a1dcc71716"), new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"), "/ImagesForCursach/Fruits/Banan.png", "Бананы", 70m }
+                    { new Guid("03636c13-8afc-4f37-8886-62604495d1cd"), new Guid("97fba9e2-0ce4-4175-a135-f687287582b1"), "/ImagesForCursach/Vegetabbles/Onions.png", "Лук", 30m },
+                    { new Guid("0f317567-48f5-4941-b15e-625a7bdee4a9"), new Guid("7ecc616c-f09b-44d4-83ab-c4d31e237eb5"), "/ImagesForCursach/Fruits/Pears.png", "Груши", 45m },
+                    { new Guid("21fbae37-17ca-441e-b786-6701a7190483"), new Guid("6368c3a6-371b-4e71-9368-259962da5dc0"), "/ImagesForCursach/BreadAndPastries/Baton.png", "Батон", 25m },
+                    { new Guid("2c4290e9-93a9-4514-83d9-60923e6e04d4"), new Guid("f1de3e56-cee8-43f9-a90d-61e21feb262b"), "/ImagesForCursach/MilkProducts/Yoghurt.png", "Йогурт", 40m },
+                    { new Guid("3c90457d-29bc-4a5f-b88b-7f90a9ee3f78"), new Guid("47a71f1e-e386-404c-a38a-a0172124ebd8"), "/ImagesForCursach/Sweets/Candy.png", "Конфеты", 25m },
+                    { new Guid("4009b958-37ad-4a30-9eed-3269465fae48"), new Guid("47a71f1e-e386-404c-a38a-a0172124ebd8"), "/ImagesForCursach/Sweets/IceCream.png", "Мороженое", 100m },
+                    { new Guid("41260f90-ef91-41a2-9962-dd078f4fbb59"), new Guid("7ecc616c-f09b-44d4-83ab-c4d31e237eb5"), "/ImagesForCursach/Fruits/Grapefruit.png", "Грейпфрут", 55m },
+                    { new Guid("450ad9c2-6677-4fd4-9fed-9297ef780d5a"), new Guid("97fba9e2-0ce4-4175-a135-f687287582b1"), "/ImagesForCursach/Vegetabbles/Potatoes.png", "Картофель", 40m },
+                    { new Guid("477af63e-c818-4ead-92e2-57d9e6a3c745"), new Guid("47a71f1e-e386-404c-a38a-a0172124ebd8"), "/ImagesForCursach/Sweets/Snickers.png", "Шоколадный батончик", 50m },
+                    { new Guid("478dbc57-d6d0-4926-a9cd-3860a190531a"), new Guid("47a71f1e-e386-404c-a38a-a0172124ebd8"), "/ImagesForCursach/Sweets/Marmalade.png", "Мармелад", 40m },
+                    { new Guid("49a8f214-8ab2-42bb-bfc5-5de5037c4dc6"), new Guid("f1de3e56-cee8-43f9-a90d-61e21feb262b"), "/ImagesForCursach/MilkProducts/ButterMilk.png", "Кефир", 50m },
+                    { new Guid("54a10746-4b97-4075-8104-f7d246359b72"), new Guid("47a71f1e-e386-404c-a38a-a0172124ebd8"), "/ImagesForCursach/Sweets/Biscuits.png", "Печенье", 30m },
+                    { new Guid("730ec087-4bc8-45d7-b90f-ab15f0a9359a"), new Guid("7ecc616c-f09b-44d4-83ab-c4d31e237eb5"), "/ImagesForCursach/Fruits/Oranges.png", "Апельсины", 60m },
+                    { new Guid("8998c2ef-861f-46d8-a688-70931c472308"), new Guid("6368c3a6-371b-4e71-9368-259962da5dc0"), "/ImagesForCursach/BreadAndPastries/BreadAndRollRaisin.png", "Булочка с изюмом", 40m },
+                    { new Guid("947b61e4-8d2f-41e9-930b-978826396ee0"), new Guid("97fba9e2-0ce4-4175-a135-f687287582b1"), "/ImagesForCursach/Vegetabbles/Carrots.png", "Морковь", 50m },
+                    { new Guid("a838585b-0cbe-42d2-8df6-17c6d0a8a651"), new Guid("6368c3a6-371b-4e71-9368-259962da5dc0"), "/ImagesForCursach/BreadAndPastries/AppleCake.png", "Пирог с яблоками", 120m },
+                    { new Guid("ca019809-ca67-4424-9819-6295e8bf95a9"), new Guid("6368c3a6-371b-4e71-9368-259962da5dc0"), "/ImagesForCursach/BreadAndPastries/CheseCake.png", "Ватрушка", 50m },
+                    { new Guid("cc6fdda7-72b7-4d9a-ab68-9054bccb4336"), new Guid("f1de3e56-cee8-43f9-a90d-61e21feb262b"), "/ImagesForCursach/MilkProducts/Milk.png", "Молоко", 80m },
+                    { new Guid("d10bde03-c746-43fa-965a-2e46fb07f8dd"), new Guid("f1de3e56-cee8-43f9-a90d-61e21feb262b"), "/ImagesForCursach/MilkProducts/SourCream.png", "Сметана", 60m },
+                    { new Guid("dec205b9-e8c6-4aca-9027-c107dd3829eb"), new Guid("7ecc616c-f09b-44d4-83ab-c4d31e237eb5"), "/ImagesForCursach/Fruits/Banan.png", "Бананы", 70m },
+                    { new Guid("efe52f75-7640-4aea-b6fa-f07c9f6b01bc"), new Guid("97fba9e2-0ce4-4175-a135-f687287582b1"), "/ImagesForCursach/Vegetabbles/Cucumbers.png", "Огурцы", 70m },
+                    { new Guid("fc1979ad-fd7a-4fda-abc0-4f8ac467f7f5"), new Guid("97fba9e2-0ce4-4175-a135-f687287582b1"), "/ImagesForCursach/Vegetabbles/Tomatoes.png", "Помидоры", 65m },
+                    { new Guid("fc4e9267-7fd0-41a4-aed4-3b7a9974f1b8"), new Guid("6368c3a6-371b-4e71-9368-259962da5dc0"), "/ImagesForCursach/BreadAndPastries/Bread.png", "Хлеб белый", 35m },
+                    { new Guid("fdd5502a-e06d-4408-88cf-100fa5b86ee1"), new Guid("7ecc616c-f09b-44d4-83ab-c4d31e237eb5"), "/ImagesForCursach/Fruits/Apples.png", "Яблоки", 80m }
                 });
 
             migrationBuilder.CreateIndex(

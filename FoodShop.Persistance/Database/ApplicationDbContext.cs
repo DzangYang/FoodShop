@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Role, Gui
     public DbSet<ApplicationUser> Users { get; set; }
     public DbSet<BonusCard> BonusCards { get; set; }
     public DbSet<Wallet> Wallets { get; set; }
+    
     public ApplicationDbContext()
     {
         
@@ -37,6 +38,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Role, Gui
         .WithOne()
         .HasForeignKey<BonusCard>(b => b.Id);
 
+        modelBuilder.Entity<Order>()
+            .HasOne<ApplicationUser>().WithMany(u => u.Orders).HasForeignKey(x => x.UserId);
 
 
         // Генерация GUID

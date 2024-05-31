@@ -16,8 +16,9 @@ public class UserController(IRegistrationService registrationService, ILoginServ
     [HttpPost("login")]
     public async Task<IActionResult> LogUserIn(UserLoginModelDto loginModelDto)
     {
-        var res = await loginService.LoginUserAsync(loginModelDto);
-        return Ok(res);
+        var result = await loginService.LoginUserAsync(loginModelDto);
+
+        return result != null ? Ok(result) : NotFound();
     }
 
 
@@ -27,10 +28,11 @@ public class UserController(IRegistrationService registrationService, ILoginServ
     /// <param name="registrationModelDto">Данные для регистрации пользователя</param>
     /// <returns></returns>
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromQuery] UserRegistrationModelDto registrationModelDto)
+    public async Task<IActionResult> RegisterUser( UserRegistrationModelDto registrationModelDto)
     {
         var result = await registrationService.RegistrationUserAsync(registrationModelDto);
-        return Ok(result);
+
+        return result != null ? Ok(result) : NotFound();
     }
 
 }

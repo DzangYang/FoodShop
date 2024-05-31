@@ -29,7 +29,7 @@ public class WalletService(IWalletRepository walletRepository, ICurrentUserServi
             Number = createWallet.Number,
             CVV = createWallet.CVV,
             ExpiryDate = DateTime.SpecifyKind(createWallet.ExpiryDate, DateTimeKind.Utc),
-
+            Amount = createWallet.Amount
         };
 
         walletRepository.Create(wallet);

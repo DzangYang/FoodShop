@@ -4,5 +4,5 @@ using FoodShop.Domain.Domain.Entities;
 namespace FoodShop.Application.Services.OrderService;
 public interface IOrderService
 {
-     void Create(CreateOrderDTO order);
+     Task Create(CreateOrderDTO order);
 }

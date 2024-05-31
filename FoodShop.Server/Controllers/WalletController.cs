@@ -10,16 +10,25 @@ public class WalletController(IWalletService walletService, ApplicationDbContext
 {
 
     [HttpPost]
-    public void Create(CreateWalletDTO createWalletDTO)
+    public async Task<IActionResult> Create(CreateWalletDTO createWalletDTO)
     {
+        if(int.Parse(createWalletDTO.CVV) <= 0)
+        {
+            return BadRequest();
+        }
+        if(int.Parse(createWalletDTO.CVV) < 3 || int.Parse(createWalletDTO.CVV) > 3)
+        {
+            return BadRequest();
+        }
         walletService.Create(createWalletDTO);
-
+        return Ok();
     }
 
-    [HttpPost("amount")]
-    public void Decreese(int amount)
+    [HttpPut("amount")]
+    public async Task<IActionResult> Decreese(int amount)
     {
-        walletService.Cancellation(amount);
-        dbContext.SaveChanges();
+         await walletService.Cancellation(amount);
+         dbContext.SaveChanges();
+         return Ok();
     }
 }
