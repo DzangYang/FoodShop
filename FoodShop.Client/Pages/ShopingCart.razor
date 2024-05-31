@@ -320,6 +320,7 @@ else
 
     private Dictionary<Guid, bool> selectedStates = new Dictionary<Guid, bool>();
 
+    //Метод получения типа оплаты
     public async Task<WayOfPayment> PaymentSelection(string wayOfPayment)
     {
         WayOfPayment type;
@@ -353,7 +354,8 @@ else
 
         await localStorage.SetItemAsync("selectedStates", selectedStates);
     }
-
+    
+    //Метод для очистки корзины
     public async Task ClearStorage()
     {
         foreach(var sale in sales.ToList())
@@ -362,6 +364,8 @@ else
              await localStorage.SetItemAsync("sale", sales);
         }
     }
+
+    //Метод оплаты товаров 
     private async Task ProcessPayment(string payment)
     {
         decimal sumSalesTotalPrice = 0;
@@ -382,7 +386,7 @@ else
               }).ToList()
         };
 
-
+        
         await Cancellation(order.Payment, amountToBPaid);
         if (string.IsNullOrEmpty(Message))
         {
@@ -403,12 +407,13 @@ else
       
     }
 
+    //Метод отправки запросов на сервер для списания денег за оплату
     public async Task HttpRequest(string url, int amount, bool executeElse)
 
     {
         try
         {
-                var response = await Http.PutAsJsonAsync(url, amount);
+            var response = await Http.PutAsJsonAsync(url, amount);
             if (!response.IsSuccessStatusCode)
             {
                 Message = await response.Content.ReadAsStringAsync();
@@ -424,6 +429,7 @@ else
         }
     }
 
+    //Метод выбора оплаты для списания денег
     public async Task Cancellation(WayOfPayment typePayment, int amount)
     {
 
@@ -440,18 +446,17 @@ else
                     await HttpRequest($"https://localhost:7228/api/BonusCard/cancellation?amount={amount}", amount, false);
                     break;
             }
-        
-        
         return;
     }   
 
-
+    //Метод удаления товара в корзине
     private async Task RemoveItemFromCart(SaleDTO sale)
     {
         sales.Remove(sale);
         await localStorage.SetItemAsync("sale", sales);
     }
 
+    //Метод обновления состояния chekbox для выбраного товара
     protected override async Task OnInitializedAsync()
     {
         string token = await localStorage.GetItemAsStringAsync("auth");
@@ -471,6 +476,7 @@ else
         await localStorage.SetItemAsync("sale", sales);
     }
 
+    //Метод получения айди продукта
     private async Task<ProductDTO> GetProductByIdAsync(Guid productId)
     {
         ProductId = productId;

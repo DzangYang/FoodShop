@@ -5,6 +5,7 @@
 @inject ILocalStorageService localStorage
 
 @code {
+    //Метод обновления состояния при выходе из учетной записи
     protected async override Task OnInitializedAsync()
     {
         var customAuthStateProvider = (CustomerAuthenticationStateProvider)AuthStateProvider;

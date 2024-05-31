@@ -30,7 +30,8 @@
 @code {
 
     string? Message = string.Empty;
-
+    
+    //Метод создания бонусной карты
     public async void AddBonusCard()
     {
         string token = await localStorage.GetItemAsStringAsync("auth");

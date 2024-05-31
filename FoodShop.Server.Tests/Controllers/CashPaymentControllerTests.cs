@@ -39,20 +39,16 @@ public class CashPaymentControllerTests
         //Arrage(Подготовка)
         var amount = 200;
 
-
         _serviceMock.Setup(x => x.Cancellation(amount)).Returns(Task.CompletedTask);
 
         //Act(Действие)
         var result = await _sut.Decreese(amount);
-
-
 
         //Assert(Проверка)
         result.Should().NotBeNull();
         result.Should().BeAssignableTo<ActionResult>();
 
         result.Should().BeOfType<OkResult>();
-
 
         _serviceMock.Verify(x => x.Cancellation(amount), Times.Once());
 
@@ -64,13 +60,10 @@ public class CashPaymentControllerTests
         //Arrage(Подготовка)
         var amount = -200;
 
-
         _serviceMock.Setup(x => x.Cancellation(amount)).Returns(Task.CompletedTask);
 
         //Act(Действие)
         var result = await _sut.Decreese(amount);
-
-
 
         //Assert(Проверка)
         result.Should().NotBeNull();

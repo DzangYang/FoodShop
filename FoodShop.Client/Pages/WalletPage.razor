@@ -23,7 +23,7 @@
             <div class="alert alert-info">@Message</div>
         }
 
-        <EditForm Model="@wallet" OnValidSubmit="@AddBonusCard">
+        <EditForm Model="@wallet" OnValidSubmit="@AddWalletCard">
             <DataAnnotationsValidator />
             <Microsoft.AspNetCore.Components.Forms.ValidationSummary />
 
@@ -64,13 +64,12 @@
     Wallet wallet = new Wallet();
 
 
-
-    public async void AddBonusCard()
+    //Метод привязки дебетовой карты
+    public async void AddWalletCard()
     {
         string token = await localStorage.GetItemAsStringAsync("auth");
         Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        
         try
         {
             var response = await Http.PostAsJsonAsync("https://localhost:7228/api/Wallet", wallet);
@@ -78,11 +77,11 @@
 
             if (response.IsSuccessStatusCode)
             {
-                Message = "Бонусная карта успешно создана!";
+                Message = "Дебетовая  карта успешно привязана!";
             }
             else
             {
-                Message = $"Ошибка при создании бонусной карты: {response.ReasonPhrase}";
+                Message = $"Ошибка при привязки дебетовой  карты: {response.ReasonPhrase}";
             }
         }
         catch (Exception ex)

@@ -34,7 +34,6 @@ else
     <p><em>Loading...</em></p>
 }
 
-
 <style>
     .btn-group {
         display: flex;
@@ -113,13 +112,8 @@ else
         await LoadProduct();
     }
 
-    private async void NavigateToProduct(Guid productId)
-    {
-        Console.WriteLine($"ANDREY CHROT  = {productId}");
-        // var token = await localStorage.GetItemAsStringAsync("auth");
-        localStorage.SetItemAsStringAsync(productId.ToString(), "anrdey");
 
-    }
+   //Метод для взвеивания продуктов
     private async Task WeighProduct(decimal amountGramm, decimal productPrice, string productCategoryName)
     {
         // Ваша логика для взвешивания товара и добавления в корзину
@@ -146,11 +140,14 @@ else
 
     }
 
+    //Метод получения итоговой цены для невзвешиваемых продуктов
+
     public async Task GetNoWeightProductTotalPrice(ProductDTO product)
     {
         totalPrice = product.Price * quantity;
     }
 
+    // Метод Добавить продукт в корзину
     private async Task AddToCart(ProductDTO product)
     {
         if(product.CategoryName != "Овощи" || product.CategoryName != "Фрукты" || product.CategoryName == "Сладостии")
@@ -186,6 +183,7 @@ else
     }
 
 
+    //Метод загрузки продукта
     private async Task LoadProduct()
     {
         string token = await localStorage.GetItemAsStringAsync("auth");
