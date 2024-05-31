@@ -128,7 +128,8 @@ img {
     {
         await LoadProducts();
     }
-
+    
+    //Метод получения пагинационных листов
     private async Task LoadProducts()
     {
         string token = await localStorage.GetItemAsStringAsync("auth");
@@ -145,6 +146,7 @@ img {
             hasNextPage = response.HasNextPage;
         }
     }
+    //Метод для получения предыдущей страницы
     private async Task Previous()
     {
         currentPage--;
@@ -155,6 +157,7 @@ img {
         }
     }
 
+     //Метод для получения следующей страницы
     private async Task Next()
     {
         currentPage++;
@@ -235,7 +238,5 @@ img {
         }
     }
 
- 
-   
 
 }

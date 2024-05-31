@@ -22,15 +22,16 @@
         await LoadProducts();
     }
 
+    //Метод загрузки каталога категорий товаров
     private async Task LoadProducts()
     {
         try
         {
-            // Retrieve the authentication token from local storage
+            
             string token = await localStorage.GetItemAsStringAsync("authToken");
-            // Set the default request header for authorization
+            
             Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            // Make an HTTP GET request to the specified URI
+            
             products = await Http.GetFromJsonAsync<Product[]>("https://localhost:7228/api/Product/Paginate");
         }
         catch (Exception ex)
@@ -39,11 +40,12 @@
         }
     }
 
-    // Define the Product class to match your data model
+   
     public class Product
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public decimal Price { get; set; } public string Description { get; set; }
+        public decimal Price { get; set; } 
+        public string Description { get; set; }
     }
 }
