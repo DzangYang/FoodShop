@@ -26,8 +26,17 @@ public class BonusCardController(ApplicationDbContext dbContext, IBonusCardServi
     [HttpPut("cancellation")]
     public async Task<IActionResult> Cancellation(int amount)
     {
-        bonusCardService.Cancellation(amount);
-        dbContext.SaveChanges();
-        return Ok();
+        try
+        {
+            bonusCardService.Cancellation(amount);
+            dbContext.SaveChanges();
+            return Ok();
+        }
+        catch (Exception)
+        {
+
+            return BadRequest("Ошибка, недостаточно бонусов");
+        }
+       
     }
 }

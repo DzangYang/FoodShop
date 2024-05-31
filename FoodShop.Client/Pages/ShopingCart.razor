@@ -25,6 +25,14 @@ else if (!sales.Any())
 {
     <p>Your cart is empty.</p>
 }
+
+else if (!string.IsNullOrEmpty(Message))
+{
+    <div class="alert alert-danger">
+        @Message
+    </div>
+}
+
 else
 {
     <div class="cart-container">
@@ -52,7 +60,7 @@ else
     }
     </div>
 
-    <button class="clear-all-btn"  >Очистить корзину</button>
+    <button class="clear-all-btn" @onclick="() => ClearStorage()" >Очистить корзину</button>
  
     <div class="cart-checkout">
         <div class="subtotal">
@@ -346,10 +354,18 @@ else
         await localStorage.SetItemAsync("selectedStates", selectedStates);
     }
 
+    public async Task ClearStorage()
+    {
+        foreach(var sale in sales.ToList())
+        {
+             sales.Remove(sale);
+             await localStorage.SetItemAsync("sale", sales);
+        }
+    }
     private async Task ProcessPayment(string payment)
     {
         decimal sumSalesTotalPrice = 0;
-
+        Message = null;
         var selectedSales = sales.Where(sale => selectedStates.ContainsKey(sale.Id)&& selectedStates[sale.Id]).ToList();
         amountToBPaid += int.Parse(paymentAmount);
 
@@ -365,44 +381,69 @@ else
                   TotalPrice = x.TotalPrice,
               }).ToList()
         };
-        
+
 
         await Cancellation(order.Payment, amountToBPaid);
-        Console.WriteLine(order.Payment);
-
-        foreach(var sale in selectedSales)
+        if (string.IsNullOrEmpty(Message))
         {
-            sumSalesTotalPrice +=  sale.TotalPrice;
+              foreach(var sale in selectedSales)
+            {
+                sumSalesTotalPrice +=  sale.TotalPrice;
+            }
+
+            var response = await Http.PostAsJsonAsync<CreateOrderDTO>("https://localhost:7228/api/Order/Create", order);
+            response.EnsureSuccessStatusCode();
+      
+            foreach(var sale in selectedSales.ToList())
+            {
+                await RemoveItemFromCart(sale);
+            }
         }
 
-        var response = await Http.PostAsJsonAsync<CreateOrderDTO>("https://localhost:7228/api/Order/Create", order);
-        response.EnsureSuccessStatusCode();
+      
+    }
 
-        foreach(var sale in selectedSales.ToList())
+    public async Task HttpRequest(string url, int amount, bool executeElse)
+
+    {
+        try
         {
-            await RemoveItemFromCart(sale);
+                var response = await Http.PutAsJsonAsync(url, amount);
+            if (!response.IsSuccessStatusCode)
+            {
+                Message = await response.Content.ReadAsStringAsync();
+            }
+            else if (executeElse)
+            {
+                await Http.PostAsJsonAsync($"https://localhost:7228/api/BonusCard/amount?amount={amount}", amount);
+            }
         }
-         StateHasChanged();
+        catch (Exception ex)
+        {
+            Message = ex.Message; // Устанавливаем сообщение об ошибке
+        }
     }
 
     public async Task Cancellation(WayOfPayment typePayment, int amount)
     {
-        switch (typePayment)
-        {
-            case WayOfPayment.CashPayment :
-                await Http.PutAsJsonAsync($"https://localhost:7228/api/CashPayment/amount?amount={amount}", amount);
-                await Http.PostAsJsonAsync($"https://localhost:7228/api/BonusCard/amount?amount={amount}", amount);
-                break;
-            case WayOfPayment.Wallet:
-                await Http.PutAsJsonAsync($"https://localhost:7228/api/Wallet/amount?amount={amount}", amount);
-                await Http.PostAsJsonAsync($"https://localhost:7228/api/BonusCard/amount?amount={amount}", amount);
-                break;
-            case WayOfPayment.BonusCard:
-                await Http.PutAsJsonAsync($"https://localhost:7228/api/BonusCard/cancellation?amount={amount}", amount);
-                break;
-        }
+
+       
+            switch (typePayment)
+            {
+                case WayOfPayment.CashPayment:
+                    await HttpRequest($"https://localhost:7228/api/CashPayment/amount?amount={amount}", amount, true);
+                    break;
+                case WayOfPayment.Wallet:
+                    await HttpRequest($"https://localhost:7228/api/Wallet/amount?amount={amount}", amount, false);
+                    break;
+                case WayOfPayment.BonusCard:
+                    await HttpRequest($"https://localhost:7228/api/BonusCard/cancellation?amount={amount}", amount, false);
+                    break;
+            }
+        
+        
         return;
-    }
+    }   
 
 
     private async Task RemoveItemFromCart(SaleDTO sale)
