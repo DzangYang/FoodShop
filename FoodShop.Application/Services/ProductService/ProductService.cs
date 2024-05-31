@@ -10,6 +10,13 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         throw new NotImplementedException();
     }
 
+    public async Task< CategoryDto> GetCategoryById(Guid cateoryId)
+    {
+       var categoryProduct =  await productRepository.GetCategoryById(cateoryId);
+       var categoryDto = new CategoryDto { Id = categoryProduct.Id, Name = categoryProduct.Name };
+       return categoryDto;
+    }
+
     public ProductDTO GetItem(Guid productId)
     {
         var product = productRepository.GetItemById(productId);
@@ -27,9 +34,9 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         return item;
     }
 
-    public PagedList<ProductDTO> GetPaginate(int pageSize, int pageNumber)
+    public async Task<PagedList<ProductDTO>> GetPaginate(int pageNumber, int pageSize)
     {
-        var pagedList = productRepository.GetPaginated(pageSize, pageNumber);
+        var pagedList =  await productRepository.GetPaginated(pageNumber, pageSize);
 
         var items = pagedList.Items.Select(x => new ProductDTO()
         {

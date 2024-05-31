@@ -3,11 +3,12 @@
 @using FoodShop.Client.States
 @using FoodShop.Application.Interfaces.Identity
 @using FoodShop.Application.DTO
-
-
+@using System.ComponentModel.DataAnnotations
+@using System.Text
+@using System.Text.Json
 
 @inject NavigationManager NavManager
-
+@inject HttpClient Http
 @inject IRegistrationService RegisterService
 
 
@@ -30,17 +31,48 @@
 
 @code {
     public string? Message = string.Empty;
-    
-    UserRegistrationModelDto RegisterModel = new();
 
+    UserRegistrationModelDto RegisterModel = new();
+    protected override async Task OnInitializedAsync()
+    {
+
+
+
+    }
     async Task RegisterAsync()
     {
-        var result = await RegisterService.RegistrationUserAsync(RegisterModel);
-        if (!result.Flag)
-            NavManager.NavigateTo("login", forceLoad: true);
-  
-        else
-            Message = result.Message;
+        try
+        {
+
+            // Отправка запроса на сервер с правильным форматом данных
+            var response = await Http.PostAsJsonAsync("https://localhost:7228/api/User/register", RegisterModel);
+
+
+            if (response.IsSuccessStatusCode)
+            {
+                NavManager.NavigateTo("login", forceLoad: true);
+                Message = "Регистрация прошла успешно";
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Message = $"Ошибка при создании бонусной карты: {response.ReasonPhrase}, {errorContent}";
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Message = $"Ошибка при отправке запроса: {ex.Message}";
+        }
+    }
+    public class UserRegistrationModelDto
+    {
+        [Required]
+        public string Login { get; set; }
+
+        [Required, Compare(nameof(Password))]
+        public string Password { get; set; }
+
     }
 
 }
+

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FoodShop.Persistance.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240520154700_init1")]
-    partial class init1
+    [Migration("20240531132240_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,27 +135,27 @@ namespace FoodShop.Persistance.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"),
+                            Id = new Guid("79629e33-966e-4002-89be-fb98312fd97b"),
                             Name = "Овощи"
                         },
                         new
                         {
-                            Id = new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"),
+                            Id = new Guid("1444a460-9f4f-495a-8075-2c2c38f0884c"),
                             Name = "Фрукты"
                         },
                         new
                         {
-                            Id = new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"),
+                            Id = new Guid("8f98165e-5cfa-46f3-b864-181b4b26517b"),
                             Name = "Хлеб и выпечка"
                         },
                         new
                         {
-                            Id = new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"),
+                            Id = new Guid("4c8d62ea-e2f7-4526-a7b8-9211f64c8426"),
                             Name = "Молочные продукты"
                         },
                         new
                         {
-                            Id = new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"),
+                            Id = new Guid("c05fb759-953f-4276-84e4-30db87d639e7"),
                             Name = "Сладости"
                         });
                 });
@@ -164,9 +164,6 @@ namespace FoodShop.Persistance.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("ApplicationUserId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateDate")
@@ -180,10 +177,10 @@ namespace FoodShop.Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("Id")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -217,192 +214,192 @@ namespace FoodShop.Persistance.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ac54bcfa-343e-4394-bdc8-d58d9e2ebb32"),
-                            CategoryProductId = new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"),
+                            Id = new Guid("5a068db7-db41-4cc2-838b-8c67ba2c036e"),
+                            CategoryProductId = new Guid("79629e33-966e-4002-89be-fb98312fd97b"),
                             ImageURL = "/ImagesForCursach/Vegetabbles/Cucumbers.png",
                             Name = "Огурцы",
                             Price = 70m
                         },
                         new
                         {
-                            Id = new Guid("e1df5688-59f9-4a2e-b570-f2af89bbbe2c"),
-                            CategoryProductId = new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"),
+                            Id = new Guid("08791d3f-001e-4568-964a-c40d08dce62f"),
+                            CategoryProductId = new Guid("79629e33-966e-4002-89be-fb98312fd97b"),
                             ImageURL = "/ImagesForCursach/Vegetabbles/Tomatoes.png",
                             Name = "Помидоры",
                             Price = 65m
                         },
                         new
                         {
-                            Id = new Guid("82f7154a-b92e-4260-95dc-251b719bbc02"),
-                            CategoryProductId = new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"),
+                            Id = new Guid("21bcfc56-58d6-420b-b7e1-d503ce4145f2"),
+                            CategoryProductId = new Guid("79629e33-966e-4002-89be-fb98312fd97b"),
                             ImageURL = "/ImagesForCursach/Vegetabbles/Carrots.png",
                             Name = "Морковь",
                             Price = 50m
                         },
                         new
                         {
-                            Id = new Guid("85dd0fac-318c-4510-ae16-8d89c7456993"),
-                            CategoryProductId = new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"),
+                            Id = new Guid("8b318592-5235-4a0a-a9c4-976c8d01d5d6"),
+                            CategoryProductId = new Guid("79629e33-966e-4002-89be-fb98312fd97b"),
                             ImageURL = "/ImagesForCursach/Vegetabbles/Potatoes.png",
                             Name = "Картофель",
                             Price = 40m
                         },
                         new
                         {
-                            Id = new Guid("956e5135-227e-4298-8ba9-060efc96fd0f"),
-                            CategoryProductId = new Guid("14e3b792-74c6-4c5f-95b6-c2e18c9253d1"),
+                            Id = new Guid("a02c4b27-0c16-44d2-b6d6-2ca2ac234a42"),
+                            CategoryProductId = new Guid("79629e33-966e-4002-89be-fb98312fd97b"),
                             ImageURL = "/ImagesForCursach/Vegetabbles/Onions.png",
                             Name = "Лук",
                             Price = 30m
                         },
                         new
                         {
-                            Id = new Guid("695f7260-8124-4aa5-b90d-830c696b8810"),
-                            CategoryProductId = new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"),
+                            Id = new Guid("98737da3-c3d4-426d-b964-aeab20fe0164"),
+                            CategoryProductId = new Guid("1444a460-9f4f-495a-8075-2c2c38f0884c"),
                             ImageURL = "/ImagesForCursach/Fruits/Apples.png",
                             Name = "Яблоки",
                             Price = 80m
                         },
                         new
                         {
-                            Id = new Guid("eec7a8eb-3b29-4248-8116-f9a1dcc71716"),
-                            CategoryProductId = new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"),
+                            Id = new Guid("29864449-0da2-4d4c-b050-267be9338c37"),
+                            CategoryProductId = new Guid("1444a460-9f4f-495a-8075-2c2c38f0884c"),
                             ImageURL = "/ImagesForCursach/Fruits/Banan.png",
                             Name = "Бананы",
                             Price = 70m
                         },
                         new
                         {
-                            Id = new Guid("6fe3639a-7d6e-46fb-bf59-818eb571f1ff"),
-                            CategoryProductId = new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"),
+                            Id = new Guid("1ab355b4-f87a-4d3c-83c1-b2a5bd2a497d"),
+                            CategoryProductId = new Guid("1444a460-9f4f-495a-8075-2c2c38f0884c"),
                             ImageURL = "/ImagesForCursach/Fruits/Oranges.png",
                             Name = "Апельсины",
                             Price = 60m
                         },
                         new
                         {
-                            Id = new Guid("9fb80e12-82dc-449a-a3f4-48e4f0080298"),
-                            CategoryProductId = new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"),
+                            Id = new Guid("9fb0a17c-dcc7-4768-817d-4c0da03863d2"),
+                            CategoryProductId = new Guid("1444a460-9f4f-495a-8075-2c2c38f0884c"),
                             ImageURL = "/ImagesForCursach/Fruits/Grapefruit.png",
                             Name = "Грейпфрут",
                             Price = 55m
                         },
                         new
                         {
-                            Id = new Guid("a876cf0b-6805-4a9e-a39b-18390e58e342"),
-                            CategoryProductId = new Guid("584e279d-acaa-42d9-a316-d681172a8b7a"),
+                            Id = new Guid("155ca4fd-da69-4569-bf05-1c6567147954"),
+                            CategoryProductId = new Guid("1444a460-9f4f-495a-8075-2c2c38f0884c"),
                             ImageURL = "/ImagesForCursach/Fruits/Pears.png",
                             Name = "Груши",
                             Price = 45m
                         },
                         new
                         {
-                            Id = new Guid("499002a8-69da-4c0c-ac48-7e28b00d7ce8"),
-                            CategoryProductId = new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"),
+                            Id = new Guid("9fdff856-a2b8-4ebd-b927-144594a4813b"),
+                            CategoryProductId = new Guid("8f98165e-5cfa-46f3-b864-181b4b26517b"),
                             ImageURL = "/ImagesForCursach/BreadAndPastries/Bread.png",
                             Name = "Хлеб белый",
                             Price = 35m
                         },
                         new
                         {
-                            Id = new Guid("26f0cd6f-1f7e-49f1-8a0b-94d1ba03471d"),
-                            CategoryProductId = new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"),
+                            Id = new Guid("64b059cc-6c85-4aaf-b698-c55e932a1025"),
+                            CategoryProductId = new Guid("8f98165e-5cfa-46f3-b864-181b4b26517b"),
                             ImageURL = "/ImagesForCursach/BreadAndPastries/Baton.png",
                             Name = "Батон",
                             Price = 25m
                         },
                         new
                         {
-                            Id = new Guid("0f5b4833-1f9f-4730-9048-ac106f7fdb1a"),
-                            CategoryProductId = new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"),
+                            Id = new Guid("9ffb4093-c66a-4963-85af-64e4cddfb7a8"),
+                            CategoryProductId = new Guid("8f98165e-5cfa-46f3-b864-181b4b26517b"),
                             ImageURL = "/ImagesForCursach/BreadAndPastries/BreadAndRollRaisin.png",
                             Name = "Булочка с изюмом",
                             Price = 40m
                         },
                         new
                         {
-                            Id = new Guid("baaccf4c-09e3-4f64-a01b-9cbd301f2eeb"),
-                            CategoryProductId = new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"),
+                            Id = new Guid("78ecc6a8-ce69-4722-b523-5ea5d8e027ec"),
+                            CategoryProductId = new Guid("8f98165e-5cfa-46f3-b864-181b4b26517b"),
                             ImageURL = "/ImagesForCursach/BreadAndPastries/AppleCake.png",
                             Name = "Пирог с яблоками",
                             Price = 120m
                         },
                         new
                         {
-                            Id = new Guid("8a62fc24-1d1e-4fc4-b23a-89d8ed34bd80"),
-                            CategoryProductId = new Guid("0364321b-8e6a-4ea8-b4a9-f853d229ec05"),
+                            Id = new Guid("1755aa7b-bd49-4142-96d1-25cfa579f78f"),
+                            CategoryProductId = new Guid("8f98165e-5cfa-46f3-b864-181b4b26517b"),
                             ImageURL = "/ImagesForCursach/BreadAndPastries/CheseCake.png",
                             Name = "Ватрушка",
                             Price = 50m
                         },
                         new
                         {
-                            Id = new Guid("26855f80-25f1-40b1-9d0b-a1e40b085b6d"),
-                            CategoryProductId = new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"),
+                            Id = new Guid("4df56152-aa04-4bc6-be2c-2d34abfe5e34"),
+                            CategoryProductId = new Guid("4c8d62ea-e2f7-4526-a7b8-9211f64c8426"),
                             ImageURL = "/ImagesForCursach/MilkProducts/Milk.png",
                             Name = "Молоко",
                             Price = 80m
                         },
                         new
                         {
-                            Id = new Guid("d87f243b-865c-41d1-adee-09616642f6c2"),
-                            CategoryProductId = new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"),
+                            Id = new Guid("d361cf7b-3050-485f-874a-b22c4c7c52be"),
+                            CategoryProductId = new Guid("4c8d62ea-e2f7-4526-a7b8-9211f64c8426"),
                             ImageURL = "/ImagesForCursach/MilkProducts/SourCream.png",
                             Name = "Сметана",
                             Price = 60m
                         },
                         new
                         {
-                            Id = new Guid("9075ac9b-9e53-450c-aedb-56e1e81407b0"),
-                            CategoryProductId = new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"),
+                            Id = new Guid("f454eecd-7b46-498f-a4b4-fa299a267a79"),
+                            CategoryProductId = new Guid("4c8d62ea-e2f7-4526-a7b8-9211f64c8426"),
                             ImageURL = "/ImagesForCursach/MilkProducts/ButterMilk.png",
                             Name = "Кефир",
                             Price = 50m
                         },
                         new
                         {
-                            Id = new Guid("e3d6f06c-fa2a-4455-b77c-b9b5bf35e847"),
-                            CategoryProductId = new Guid("887bdaf2-2fdf-493a-8779-59d36c05ec77"),
+                            Id = new Guid("ca8c600c-53ff-477c-8b3b-07a8167dea4d"),
+                            CategoryProductId = new Guid("4c8d62ea-e2f7-4526-a7b8-9211f64c8426"),
                             ImageURL = "/ImagesForCursach/MilkProducts/Yoghurt.png",
                             Name = "Йогурт",
                             Price = 40m
                         },
                         new
                         {
-                            Id = new Guid("0247fbd8-098a-4a98-8fe5-4a2c953b267b"),
-                            CategoryProductId = new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"),
+                            Id = new Guid("382d33a5-9ea1-455c-a330-22b30628adf0"),
+                            CategoryProductId = new Guid("c05fb759-953f-4276-84e4-30db87d639e7"),
                             ImageURL = "/ImagesForCursach/Sweets/Snickers.png",
                             Name = "Шоколадный батончик",
                             Price = 50m
                         },
                         new
                         {
-                            Id = new Guid("394497ab-9cdc-447e-ae73-dac010f3ba3f"),
-                            CategoryProductId = new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"),
+                            Id = new Guid("fde04e4f-4642-43dd-8973-a2576d4de748"),
+                            CategoryProductId = new Guid("c05fb759-953f-4276-84e4-30db87d639e7"),
                             ImageURL = "/ImagesForCursach/Sweets/Marmalade.png",
                             Name = "Мармелад",
                             Price = 40m
                         },
                         new
                         {
-                            Id = new Guid("ca394d54-8b6a-4764-b972-f5217745fc83"),
-                            CategoryProductId = new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"),
+                            Id = new Guid("648ea324-56b1-4889-8a4a-c5ee63e35cad"),
+                            CategoryProductId = new Guid("c05fb759-953f-4276-84e4-30db87d639e7"),
                             ImageURL = "/ImagesForCursach/Sweets/Biscuits.png",
                             Name = "Печенье",
                             Price = 30m
                         },
                         new
                         {
-                            Id = new Guid("44d20ea0-ede1-47d5-8e3e-d8adc8e6d86a"),
-                            CategoryProductId = new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"),
+                            Id = new Guid("342da0b8-e2ff-449d-94d3-1b63ba06d302"),
+                            CategoryProductId = new Guid("c05fb759-953f-4276-84e4-30db87d639e7"),
                             ImageURL = "/ImagesForCursach/Sweets/Candy.png",
                             Name = "Конфеты",
                             Price = 25m
                         },
                         new
                         {
-                            Id = new Guid("e2e05228-f208-44af-8c57-c6549b8b31aa"),
-                            CategoryProductId = new Guid("9f2ca956-b0d9-493d-94cd-86aedd0c9e8f"),
+                            Id = new Guid("325f9548-6ba5-4991-8968-150975b6fda2"),
+                            CategoryProductId = new Guid("c05fb759-953f-4276-84e4-30db87d639e7"),
                             ImageURL = "/ImagesForCursach/Sweets/IceCream.png",
                             Name = "Мороженое",
                             Price = 100m
@@ -423,6 +420,9 @@ namespace FoodShop.Persistance.Migrations
 
                     b.Property<int>("Qantity")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -611,7 +611,9 @@ namespace FoodShop.Persistance.Migrations
                 {
                     b.HasOne("FoodShop.Domain.Domain.Entities.ApplicationUser", null)
                         .WithMany("Orders")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FoodShop.Domain.Domain.Entities.Product", b =>

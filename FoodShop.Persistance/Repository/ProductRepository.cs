@@ -28,6 +28,12 @@ public class ProductRepository(ApplicationDbContext dbContext) : IProductReposit
         return dbContext.Products.ToList();
     }
 
+    public async Task<CategoryProduct> GetCategoryById(Guid categoryId)
+    {
+        var result = await dbContext.CategoryProducts.FirstOrDefaultAsync(c => c.Id == categoryId);
+        return result;
+    }
+
     public Product GetItemById(Guid productId)
     {
         var product = dbContext.Products.Include(c => c.CategoryProduct).FirstOrDefault(p => p.Id == productId);
@@ -38,12 +44,12 @@ public class ProductRepository(ApplicationDbContext dbContext) : IProductReposit
          return product;
     }
 
-    PagedList<Product> IProductRepository.GetPaginated(int pageSize, int pageNumber)
+    async Task<PagedList<Product>> IProductRepository.GetPaginated(int pageNumber, int pageSize)
     {
     
-        var productsResponceQuery = dbContext.Products.Include(x => x.CategoryProduct).ToList();
+        var productsResponceQuery = await dbContext.Products.Include(x => x.CategoryProduct).ToListAsync();
 
-        var products = productsResponceQuery.ToPagedList(pageSize, pageNumber);
+        var products = productsResponceQuery.ToPagedList(pageNumber, pageSize);
 
         return products;
     }

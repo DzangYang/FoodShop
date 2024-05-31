@@ -7,9 +7,13 @@ namespace FoodShop.Server.Controllers;
 public class CashPaymentController(ICashPaymentService cashPaymentService) : ControllerBase
 {
 
+
     [HttpPut("amount")]
-    public async Task<IActionResult> Decreese(int amount)
+    public async Task<ActionResult> Decreese(int amount)
     {
+        if (amount <= 0)
+            return BadRequest();
+
         await cashPaymentService.Cancellation(amount);
         return Ok();
     }

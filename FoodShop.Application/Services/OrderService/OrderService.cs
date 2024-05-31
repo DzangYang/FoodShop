@@ -6,10 +6,9 @@ using FoodShop.Domain.Domain.Interfaces.IRepositoryes;
 namespace FoodShop.Application.Services.OrderService;
 public class OrderService(IOrderRepository orderRepository, ICurrentUserService currentUserService) : IOrderService
 {
-    public void Create(CreateOrderDTO orderDTO)
+    public async Task Create(CreateOrderDTO orderDTO)
     {
-        if (orderDTO == null)
-            throw new Exception();
+
         var orderId = Guid.NewGuid();
         var sales = orderDTO.Sales.Select(s => new Sale()
         {
@@ -19,6 +18,7 @@ public class OrderService(IOrderRepository orderRepository, ICurrentUserService 
             TotalPrice = s.TotalPrice,
             
         }).ToList();
+
         var order = new Order()
         {
             CreateDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
@@ -28,7 +28,7 @@ public class OrderService(IOrderRepository orderRepository, ICurrentUserService 
             Sales = sales
         };
 
-        orderRepository.Create(order);
+         await orderRepository.CreateAsync(order);
 
     }
 }

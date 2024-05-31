@@ -7,7 +7,12 @@ public class OrderRepository(ApplicationDbContext dbContext) : IOrderRepository
 {
     public void Create(Order entityDto)
     {
-        dbContext.Orders.Add(entityDto);
+       
+    }
+
+    public async Task CreateAsync(Order order)
+    {
+        await dbContext.Orders.AddAsync(order);
         dbContext.SaveChanges();
     }
 

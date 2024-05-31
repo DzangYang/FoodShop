@@ -1,7 +1,9 @@
-﻿using FoodShop.Application.DTO.Requests;
+﻿using FoodShop.Application.DTO;
+using FoodShop.Application.DTO.Requests;
 using FoodShop.Application.Interfaces.Identity;
 using FoodShop.Application.Services.ProductService;
 using FoodShop.Domain.Domain.Interfaces.IRepositoryes;
+using FoodShop.Domain.Domain.Paginated;
 using FoodShop.Persistance.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +13,14 @@ namespace FoodShop.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductController(IProductRepository productRepository, ApplicationDbContext dbContext,
-    IProductService productService, IRegistrationService registrationService,
-    IHttpContextAccessor httpContext) : ControllerBase
+public class ProductController(IProductService productService) : ControllerBase
 {
     [HttpGet("api/Category/{categoryId}")]
-    public IActionResult GetCategoryById(Guid categoryId)
+    public async Task<ActionResult<CategoryDto>> GetCategoryById(Guid categoryId)
     {
-        var category = dbContext.CategoryProducts.FirstOrDefault(c => c.Id == categoryId);
-        var categoryDto = new CategoryDto { Id = category.Id, Name = category.Name };
-        return Ok(categoryDto);
+        var categoryDto =  await productService.GetCategoryById(categoryId);
+
+        return categoryDto != null ? Ok(categoryDto) : NotFound();
     }
 
     /// <summary>
@@ -28,24 +28,26 @@ public class ProductController(IProductRepository productRepository, Application
     /// </summary>
     /// <param name="paginateDto">Данные для создания пагинационного листа</param>
     /// <returns></returns>
-    [Authorize]
+    //[Authorize]
     [HttpGet("Paginate")]
-    public IActionResult GetPaginated([FromQuery] CreatePaginateRequestDto paginateDto)
+    public async Task<ActionResult<PagedList<ProductDTO>>> GetPaginated([FromQuery] CreatePaginateRequestDto paginateDto)
     {
-        var result = productService.GetPaginate(paginateDto.PageNumber, paginateDto.PageSize);
-
-        //var result = productRepository
-        //    .GetPaginated(paginateDto.PageNumber, paginateDto.PageSize);
-
+        if(paginateDto.PageNumber <= 0 || paginateDto.PageSize <= 0)
+        {
+            return BadRequest();
+        }
+        var result = await productService.GetPaginate(paginateDto.PageNumber, paginateDto.PageSize);
+       
         return Ok(result);
     }
 
     [HttpGet("GetItem")]
-    public IActionResult GetItemById(Guid productId)
+    public async Task<IActionResult> GetItemById(Guid productId)
     {
-
+        
         var result = productService.GetItem(productId);
-        return Ok(result);
+        return result != null ? Ok(result) : NotFound();
+       
     }
 
 }

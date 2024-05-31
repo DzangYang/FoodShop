@@ -28,7 +28,7 @@ public class ApplicationUser : IdentityUser<Guid>
     /// <summary>
     /// Наличка
     /// </summary>
-    public decimal Cash { get; set; }
+    public decimal Cash { get; set; } = 10000;
     /// <summary>
     /// Список заказов пользователя
     /// </summary>

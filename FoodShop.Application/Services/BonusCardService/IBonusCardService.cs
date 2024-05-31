@@ -3,5 +3,6 @@ public interface IBonusCardService
 {
     void Create();
     void CreateBonuses(int amountBonuses);
+    void Cancellation(int amount);
 
 }

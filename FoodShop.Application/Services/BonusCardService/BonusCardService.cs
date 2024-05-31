@@ -5,30 +5,67 @@ namespace FoodShop.Application.Services.BonusCardService;
 public class BonusCardService(IBonusCardRepository bonusCardRepository,
     ICurrentUserService currentUserService) : IBonusCardService
 {
+    public void Cancellation(int amount)
+    {
+        try
+        {
+            var exist = bonusCardRepository.ExistForUser(currentUserService.Id);
+            if (!exist) throw new Exception("Бонусная карта не привязана");
+
+            var currentBonusCard = bonusCardRepository.GetByUserId(currentUserService.Id);
+
+            currentBonusCard.Amount -= amount;
+        }
+        catch 
+        {
+
+            throw new Exception("Ошибка списания бонусов");
+        }
+       
+    }
+
     public void Create()
     {
-        bool exist = bonusCardRepository.ExistForUser(currentUserService.Id);
-        if (exist) throw new Exception("Бонусная карта уже привязана");
-
-        var bonusCard = new BonusCard()
+        try
         {
-            Id = currentUserService.Id,
-            Account = Guid.NewGuid().ToString(),
-        };
+            bool exist = bonusCardRepository.ExistForUser(currentUserService.Id);
+            if (exist) throw new Exception("Бонусная карта уже привязана");
 
-        bonusCardRepository.Create(bonusCard);
+            var bonusCard = new BonusCard()
+            {
+                Id = currentUserService.Id,
+                Account = Guid.NewGuid().ToString(),
+            };
 
+            bonusCardRepository.Create(bonusCard);
+
+        }
+        catch 
+        {
+
+            throw new Exception("Ошибка создания бонусной карты");
+        }
+       
     }
 
     public void CreateBonuses(int amountBonuses)
     {
-        var exist = bonusCardRepository.ExistForUser(currentUserService.Id);
-        if (!exist) throw new Exception("Бонусная карта не привязана");
+        try
+        {
+            var exist = bonusCardRepository.ExistForUser(currentUserService.Id);
+            if (!exist) throw new Exception("Бонусная карта не привязана");
 
-        var currentBonusCard = bonusCardRepository.GetByUserId(currentUserService.Id);
+            var currentBonusCard = bonusCardRepository.GetByUserId(currentUserService.Id);
 
-        currentBonusCard.Amount += amountBonuses;
+            currentBonusCard.Amount += amountBonuses / 2;
 
+        }
+        catch 
+        {
+
+            throw new Exception("Ошибка добавления бонусов");
+        }
+      
     }
 
 }
